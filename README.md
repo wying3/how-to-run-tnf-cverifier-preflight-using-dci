@@ -89,13 +89,39 @@ resources:
 ```
 - **Deploy DCI Container using helmchart**
 ```diff
-+ helm install dci-container dci-container/ -n dci --wait
++ helm install dci dci-container/ -n dci --wait
 + helm ls -n dci
-NAME             NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-dci-container      dci              1            2022-07-07 10:28:53.014745629 -0500 CDT deployed        dci-container-0.1.0                
+NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+dci     dci             1               2022-07-13 15:26:29.697521572 -0500 CDT deployed        dci-container-0.1.0              
 + oc get po -n dci
-NAME                                       READY   STATUS    RESTARTS   AGE
-dci-container-5fdf7f7fc4-9gzwc   1/1     Running   0          6d4h
+NAME                                 READY   STATUS    RESTARTS   AGE
+dci-dci-container-7b9669f68d-pxwf4   1/1     Running   0          3m55s
++ oc exec -it dci-dci-container-7b9669f68d-pxwf4 -- bash -n dci
+[root@dci-dci-container-7b9669f68d-pxwf4 /]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+3: eth0@if16698: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1400 qdisc noqueue state UP group default 
+    link/ether 0a:58:0a:84:00:68 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.132.0.104/23 brd 10.132.1.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::858:aff:fe84:68/64 scope link 
+       valid_lft forever preferred_lft forever
+4: net1@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default 
+    link/ether 94:40:c9:c1:eb:69 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.30.20/27 brd 192.168.30.31 scope global net1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::9440:c900:6c1:eb69/64 scope link 
+       valid_lft forever preferred_lft forever
+
+[root@dci-dci-container-7b9669f68d-pxwf4 /]# ping 192.168.30.1 -c3
+PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
+64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=0.493 ms
+64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
+64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
