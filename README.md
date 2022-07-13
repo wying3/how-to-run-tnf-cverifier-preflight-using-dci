@@ -8,7 +8,7 @@ This GIT repository is to show how to use DCI as centralize tool to run the foll
 
 ## Build DCI container image with dci's requirements and preflight binary inside the image
 ```diff
-+ oc git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
++ git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
 + podman build -t dci-container-tpc:v1 -f ./Dockerfile-WithPreflight
 + podman tag dci-container-tpc:v1 quay.io/avu0/dci-container-tpc:v1
 + podman push quay.io/avu0/dci-container-tpc:v1
@@ -97,3 +97,8 @@ dci-container      dci              1            2022-07-07 10:28:53.014745629 -
 NAME                                       READY   STATUS    RESTARTS   AGE
 dci-container-5fdf7f7fc4-9gzwc   1/1     Running   0          6d4h
 ```
+
+## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
+- **Use DCI to run TNF test Suite**
+- **Use DCI to run Chart-Verifier**
+- **Use DCI to run Preflight**
