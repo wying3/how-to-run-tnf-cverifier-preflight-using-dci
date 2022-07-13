@@ -76,7 +76,7 @@ resources:
     cpu: 2
     memory: 4Gi
 ```
-**Note:** serviceAccount name and namespace must be used on step when add SCC privileged 
+**Note:** serviceAccount name and namespace must be used same name on step when add SCC privileged.
 
 - **Create Namespace and add SCC to SA user as priviledge**
 ```diff
