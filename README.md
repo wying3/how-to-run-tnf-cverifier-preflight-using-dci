@@ -123,8 +123,22 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
+## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual links and references
+- **TNF Test Suite**
+- **Chart-verifier**
+```
+Example of run chart-verifier from podman,
+podman run -e KUBECONFIG=/ava/kubeconfig.sno -v ${PWD}:/ava:Z --rm   quay.io/redhat-certification/chart-verifier verify /ava/samplechart --config /ava/config.yaml -F /ava/values.yaml
+
+Example of running chart-verifier from binary(chart-verifier)
+./chart-verifier verify --config config.yaml samplechart2/samplechart-0.1.2.tgz
+```
+https://github.com/redhat-certification/chart-verifier
+https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#chart-testing
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
 - **Use DCI to run TNF test Suite**
 - **Use DCI to run Chart-Verifier**
 - **Use DCI to run Preflight**
+
+**Note**: when run chart-verifier locally, it created following .cache dir under ~/.cache, so sometime if there are any changes that made to values/template, it will use the cache files instead of new changes. If that happened, you can delete .cache/*.
