@@ -123,19 +123,50 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
-## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual links and references
+## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links
 - **TNF Test Suite**
+- 
 - **Chart-verifier**
+**Example of run chart-verifier from podman**
+```bash
+podman run -e KUBECONFIG=/ava/kubeconfig.sno -v ${PWD}:/ava:Z  \
+       --rm   quay.io/redhat-certification/chart-verifier verify /ava/samplechart \
+       --config /ava/config.yaml -F /ava/values.yaml
 ```
-Example of run chart-verifier from podman,
-podman run -e KUBECONFIG=/ava/kubeconfig.sno -v ${PWD}:/ava:Z --rm   quay.io/redhat-certification/chart-verifier verify /ava/samplechart --config /ava/config.yaml -F /ava/values.yaml
 
-Example of running chart-verifier from binary(chart-verifier)
-./chart-verifier verify --config config.yaml samplechart2/samplechart-0.1.2.tgz
+**Example of running chart-verifier from binary(chart-verifier with set values)**
+```bash
+BUILD_ID="avachart"
+NAMESPACE="avachart"
+RELEASE=""
+./chart-verifier                                                  \
+    verify                                                        \
+    --set chart-testing.buildId=${BUILD_ID}                       \
+    --set chart-testing.upgrade=false                             \
+    --set chart-testing.skipMissingValues=true                    \
+    --set chart-testing.namespace=${NAMESPACE}                    \
+    --set chart-testing.releaseLabel="app.kubernetes.io/instance" \
+    samplechart
 ```
-https://github.com/redhat-certification/chart-verifier
-https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#chart-testing
+**Example of running chart-verifier from binary(chart-verifier with --config option)**
 
+**config.yaml:**
+```yaml
+chart-testing:
+    buildId: avachart
+    upgrade: false
+    skipMissingValues: true
+    namespace: avachart
+    releaseLabel: "app.kubernetes.io/instance"
+```
+```bash
+./chart-verifier verify --config config.yaml samplechart-0.1.2.tgz
+```
+**More example of options/arguments can be found in these links:**
+
+Chart-Verifier homepage: [chart-verifier](https://github.com/redhat-certification/chart-verifier). More Options and examples:
+[chart-verifier-opions](https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#chart-testing)
+```
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
 - **Use DCI to run TNF test Suite**
 - **Use DCI to run Chart-Verifier**
