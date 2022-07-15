@@ -1,0 +1,13 @@
+---
+dci_topic: OCP-4.9
+dci_name: TestPreflightFromDCIContainer
+dci_configuration: Run Preflight container image from DCI
+#do_preflight_tests: true
+preflight_test_certified_image: true
+
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+preflight_containers_to_certify:
+  - container_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
+  #- pyxis_container_identifier: "628b8f2819e6793741575daa"
+
+#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"

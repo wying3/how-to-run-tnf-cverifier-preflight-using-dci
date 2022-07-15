@@ -1,0 +1,11 @@
+partner_name: telcoci CMM
+partner_email: telco.cmm@nokia.com
+github_token_path: "/opt/cache/token.txt"
+dci_charts:
+  -
+    name: sameplechart2
+    chart_file: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/samplechart-0.1.3.tgz
+    #chart_values: https://github.com/ansvu/samplechart2/blob/main/samplechart/values.yaml
+    #install: true
+    deploy_chart: true
+    create_pr: false

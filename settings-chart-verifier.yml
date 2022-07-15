@@ -1,0 +1,10 @@
+---
+dci_topic: OCP-4.9
+dci_name: TestDCIWithChart-Verifier
+dci_configuration: DCI Chart-verifier
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+do_chart_verifier: true
+dci_openshift_app_ns: avachart
+dci_teardown_on_success: false
+dci_disconnected: false
+#test_network_function_version: v4.0.1	
