@@ -1,8 +1,27 @@
+Table of Contents
+=================
+
+* [how-to-run-tnf-chart-verifier-preflight-using-dci](#how-to-run-tnf-chart-verifier-preflight-using-dci)
+   * [Pre-requisites](#pre-requisites)
+   * [Build DCI container image with dci's requirements and preflight binary inside the image](#build-dci-container-image-with-dcis-requirements-and-preflight-binary-inside-the-image)
+   * [Build DCI container image with dci's requirements only](#build-dci-container-image-with-dcis-requirements-only)
+   * [Prepare and Deploy DCI Container using helm chart](#prepare-and-deploy-dci-container-using-helm-chart)
+      * [Update helm chart values.yaml](#update-helm-chart-valuesyaml)
+      * [Create Namespace and add SCC to SA user as priviledge](#create-namespace-and-add-scc-to-sa-user-as-priviledge)
+      * [Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node](#label-the-sno-or-masterworker-nodes-if-nodeselector-is-enabled-to-allocate-this-dci-container-pod-to-specific-node)
+      * [Deploy DCI Container using helmchart](#deploy-dci-container-using-helmchart)
+      * [Scale out additional DCI Container for more users](#scale-out-additional-dci-container-for-more-users)
+   * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual-examples-and-links)
+      * [TNF Test Suite](#tnf-test-suite)
+      * [Chart-verifier](#chart-verifier)
+   * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
+
+
 # how-to-run-tnf-chart-verifier-preflight-using-dci
 The main purpose of this GIT repository is solely to show how to use DCI as centralize tool to run the following tests:
-- TNF Test Suite Certification
-- Helm Chart-verifier
-- Preflight to scan the image for CVE and security checking  
+- [x] TNF Test Suite Certification
+- [x] Helm Chart-verifier
+- [x] Preflight to scan the image for CVE and security checking  
 
 Additional, this respository will aim to show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 tests inside a Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
   
@@ -128,12 +147,6 @@ NAME                                 READY   STATUS    RESTARTS   AGE
 dci-dci-container-7b9669f68d-pxwf4   1/1     Running   0          3m55s
 + oc exec -it dci-dci-container-7b9669f68d-pxwf4 -- bash -n dci
 [root@dci-dci-container-7b9669f68d-pxwf4 /]# ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
 3: eth0@if16698: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1400 qdisc noqueue state UP group default 
     link/ether 0a:58:0a:84:00:68 brd ff:ff:ff:ff:ff:ff link-netnsid 0
     inet 10.132.0.104/23 brd 10.132.1.255 scope global eth0
