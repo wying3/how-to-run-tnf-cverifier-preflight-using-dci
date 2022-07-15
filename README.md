@@ -286,8 +286,8 @@ dci-container-with-preflight
 ├── start-dci-container-runner.sh
 ```
    - Start DCI Container Runner to test Preflight
-```bash
-bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
+```diff
++ bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
 Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cert.redhat.com:6443".
 22/07/15 15:17:16 INFO : Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig and other files for Preflight/HelmChart to to dci-dci-container-7b9669f68d-pxwf4
 22/07/15 15:17:27 INFO : Start DCI Container Runner for PREFLIGHT Test Type...........
@@ -306,4 +306,32 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
 ![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
 
 - **Use DCI to run Chart-Verifier**
+  - Files structure
+```bash
+tree dci-container-with-preflight
+dci-container-with-preflight
+├── dcirc.sh
+├── dci-runner.sh
+├── install.yml
+├── kubeconfig
+├── settings.yml
+├── helm_config.yaml
+├── github_token.txt
+├── start-dci-container-runner.sh
+```
+   - Start DCI Container Runner to test Chart-Verifier
+```diff
++ bash start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-7b9669f68d-pxwf4
+```
+```bash
+TASK [Final step] **************************************************************
+ok: [jumphost] => {
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/5f4f67e5-d641-4432-86fe-92eb5a3dcf5b/jobStates"
+}
+
+PLAY RECAP *********************************************************************
+jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1   
+```
+![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
+
 - **Use DCI to run TNF test Suite**
