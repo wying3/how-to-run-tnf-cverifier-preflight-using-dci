@@ -366,7 +366,7 @@ ok: [jumphost] => {
 PLAY RECAP *********************************************************************
 jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1     
 ```
-![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult "DCI Chart-Verifier TestResults")
+![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
 
 ### Use DCI to run TNF test Suite  
   - **Settings Contents for TNF Test Suite**
