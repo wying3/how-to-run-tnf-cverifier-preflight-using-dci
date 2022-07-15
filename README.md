@@ -2,9 +2,12 @@
 This GIT repository is to show how to use DCI as centralize tool to run the following tests TNF Test Suite, Helm Chart-verifier and Preflight (Scan the image).
 
 ## Pre-requisites
-- **One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io for submission**
+- **One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission**
 - **An Openshift cluster either SNO or Compact/Hub Cluster**
 - **An account that can access to ci.io with DCI client-id and secrets https://www.distributed-ci.io/remotecis**
+- **An real CNF application or a test-app that need to label them specifically and update to settings.yml**
+- **Helm Chart testing needs to have a helmchart repository with index release if enable-helm-chart-testing**  
+  [Example-of-helm-chart-release](https://github.com/ansvu/samplechart2/releases/tag/samplechart-0.1.3)
 
 ## Build DCI container image with dci's requirements and preflight binary inside the image
 ```diff
@@ -123,9 +126,33 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
+- **Scale out additional DCI Container for more users**  
+  - if there are more users need to test for different CNF application  
+    we can scale out additional DCI Container PODs if NAD has a range of more then one IP Addreses
+```diff
++ oc scale Deployment/dci-dci-container --replicas=2 -n dci
+deployment.apps/dci-dci-container scaled
++ oc get po -n dci
+NAME                                 READY   STATUS    RESTARTS   AGE
+dci-dci-container-7b9669f68d-pxwf4   1/1     Running   0          42h
+dci-dci-container-7b9669f68d-pzfj4   1/1     Running   0          12s
+- ---------------------Second DCI Container PODs created in less 2s-------------------------------
++ oc exec -it dci-dci-container-7b9669f68d-pzfj4 -n dci -- bash -c 'ip a'
+4: net1@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default 
+    link/ether 94:40:c9:c1:eb:69 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.30.21/27 brd 192.168.30.31 scope global net1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::9440:c900:7c1:eb69/64 scope link 
+       valid_lft forever preferred_lft forever
++ oc exec -it dci-dci-container-7b9669f68d-pzfj4 -n dci -- bash -c 'ping -I net1 192.168.30.1'
+PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
+64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=3.68 ms
+64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.329 ms       
+```
+<br />
+
 ## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links
 - **TNF Test Suite**
-- 
 - **Chart-verifier**
 **Example of run chart-verifier from podman**
 ```bash
@@ -162,14 +189,23 @@ chart-testing:
 ```bash
 ./chart-verifier verify --config config.yaml samplechart-0.1.2.tgz
 ```
-**More example of options/arguments can be found in these links:**
-
+**More example of options/arguments can be found in these links:**  
 Chart-Verifier homepage: [chart-verifier](https://github.com/redhat-certification/chart-verifier). More Options and examples:
-[chart-verifier-opions](https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#chart-testing)
+[chart-verifier-opions](https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#chart-testing)  
+<br />
+
+**WARNING on Chart-verifier Cache/chart-verifier** 
+
+**Note:** So sometime you updated or modified something on the helm chart, when you re-run the test, it takes the old info from previous data
+          that is from this directory the ~/.cache/chart-verifier/.  
+          To avoid this issue, you can delete these contents under ~/.cache/chart-verifier/.
+```bash
+ls -1 ~/.cache/chart-verifier/
+samplechart
+samplechart_0_1_2_tgz
 ```
+
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
 - **Use DCI to run TNF test Suite**
 - **Use DCI to run Chart-Verifier**
 - **Use DCI to run Preflight**
-
-**Note**: when run chart-verifier locally, it created following .cache dir under ~/.cache, so sometime if there are any changes that made to values/template, it will use the cache files instead of new changes. If that happened, you can delete .cache/*.
