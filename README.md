@@ -1,7 +1,7 @@
 Table of Contents
 =================
 
-* [how-to-run-tnf-chart-verifier-preflight-using-dci](#how-to-run-tnf-chart-verifier-preflight-using-dci)
+* [How To Run TNF Cert, Chart-Verifier, Preflight using DCI](#how-to-run-tnf-cert-chart-verifier-preflight-using-dci)
    * [Purpose of this Repository](#purpose-of-this-repository)
    * [Pre-requisites](#pre-requisites)
    * [Build DCI container image with dci's requirements and preflight binary inside the image](#build-dci-container-image-with-dcis-requirements-and-preflight-binary-inside-the-image)
@@ -18,7 +18,7 @@ Table of Contents
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
 
 
-# how-to-run-tnf-chart-verifier-preflight-using-dci
+# How To Run TNF Cert, Chart-Verifier, Preflight using DCI
 ## Purpose of this Repository
 
 The main purpose of this GIT repository is solely to show how to use DCI as centralize tool to run the following tests:
@@ -270,6 +270,40 @@ samplechart_0_1_2_tgz
 ```
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
-- **Use DCI to run TNF test Suite**
-- **Use DCI to run Chart-Verifier**
 - **Use DCI to run Preflight**
+  - Files structure
+```bash
+tree dci-container-with-preflight
+dci-container-with-preflight
+├── auth.json
+├── dcirc.sh
+├── dci-runner.sh
+├── install.yml
+├── kubeconfig
+├── pyxis-apikey.txt
+├── settings-preflight.yml
+├── settings.yml
+├── start-dci-container-runner.sh
+```
+   - Start DCI Container Runner to test Preflight
+```bash
+bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
+Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cert.redhat.com:6443".
+22/07/15 15:17:16 INFO : Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig and other files for Preflight/HelmChart to to dci-dci-container-7b9669f68d-pxwf4
+22/07/15 15:17:27 INFO : Start DCI Container Runner for PREFLIGHT Test Type...........
+20220715-20:17:28 Uses resource /etc/dci-openshift-app-agent/dcirc.sh.
+......
+```
+```ansible
+TASK [Final step] **************************************************************
+ok: [jumphost] => {
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/0f81cc11-6e7c-47a9-9cf5-967c8572f1ec/jobStates"
+}
+
+PLAY RECAP *********************************************************************
+jumphost                   : ok=118  changed=41   unreachable=0    failed=0    skipped=34   rescued=0    ignored=1   
+```
+![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
+
+- **Use DCI to run Chart-Verifier**
+- **Use DCI to run TNF test Suite**
