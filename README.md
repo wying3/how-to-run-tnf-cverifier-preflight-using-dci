@@ -1,5 +1,7 @@
 # how-to-run-tnf-chart-verifier-preflight-using-dci
-This GIT repository is to show how to use DCI as centralize tool to run the following tests TNF Test Suite, Helm Chart-verifier and Preflight (Scan the image). Additional, this respository also show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also aim to do demostration how to use DCI to run these 3 tests inside Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries. Beside it has an extra benefits, example user can also scale out additional POD in seconds to run DCI testing for different application on same or different clusters. Finally, this repository also add the original manual methods of how to run these 3 steps without using DCI tool for references/troubleshooting.
+This GIT repository is to show how to use DCI as centralize tool to run the following tests TNF Test Suite, Helm Chart-verifier and Preflight (Scan the image). Additional, this respository also show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also aim to do demostration how to use DCI to run these 3 tests inside Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
+  
+In matter of facts, it has an extra benefits, example user can also scale out additional POD in seconds to run DCI testing for different application on same or different clusters. Finally, this repository also add the original manual methods of how to run these 3 steps without using DCI tool for references/troubleshooting.
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
@@ -99,6 +101,19 @@ resources:
 
 ### Deploy DCI Container using helmchart
 ```diff
++ tree dci-container/
+dci-container/
+├── Chart.yaml
+├── templates
+│   ├── createdci-pdb.yaml
+│   ├── deployment.yaml
+│   ├── _helpers.tpl
+│   ├── ImagePullSecret.tpl
+│   ├── ImageRepoPullSecret.yaml
+│   ├── ipvlan.yaml
+│   └── serviceaccount.yaml
+└── values.yaml
+- ---------------------------------------------------------------------------------------------------------------------------------
 + helm install dci dci-container/ -n dci --wait
 + helm ls -n dci
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
