@@ -1,13 +1,15 @@
-# how-to-run-tnf-cverifier-preflight-using-dci
+# how-to-run-tnf-chart-verifier-preflight-using-dci
 This GIT repository is to show how to use DCI as centralize tool to run the following tests TNF Test Suite, Helm Chart-verifier and Preflight (Scan the image).
 
 ## Pre-requisites
-- One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission**
-- An Openshift cluster either SNO or Compact/Hub Cluster**
+- One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
+- An Openshift cluster either SNO or Compact/Hub Cluster
 - An account that can access to ci.io with DCI client-id and secrets https://www.distributed-ci.io/remotecis
 - An real CNF application or a test-app that need to label them specifically and update to settings.yml
 - Helm Chart testing needs to have a helmchart repository with index release if enable-helm-chart-testing  
-  [Example-of-helm-chart-release](https://github.com/ansvu/samplechart2/releases/tag/samplechart-0.1.3)
+  [Example-of-helm-chart-release](https://github.com/ansvu/samplechart2/releases/tag/samplechart-0.1.3)  
+  Or Check out this document I made [Instruction-how-add-helm-chart-to-github](https://docs.google.com/presentation/d/1UEppK33-JMfCO4UzxgeDkL1zZpvIejdwv6lIM3tx4JY/edit?usp=sharing)  
+  Or this more harder way original we used [Using CR tooling](https://docs.google.com/document/d/1pBkS0Z1mbbDZpKIytbTfPCSrMFayqUYZ6p2ngCxFkrU/edit?usp=sharing)
 
 ## Build DCI container image with dci's requirements and preflight binary inside the image
 ```diff
@@ -158,9 +160,29 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 <br />
 
 ## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links
-- **TNF Test Suite**
-- **Chart-verifier**
-**Example of run chart-verifier from podman**
+### TNF Test Suite
+### Chart-verifier  
+- **Check current-context belong to your CNF Namespace**
+  - Edit the kubeconfig then search current-context and update to your CNF application namespace
+  - Or use oc config cmd, so if current-context name is not YOURs, then do following:
+```bash
+#Check Current-Context#
+oc config current-context
+mvnr-du/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443/system:admin
+
+#Current-context is NOT avachart#
+
+#Get a list of contexts and search for CNF Namespace#
+oc config get-contexts |grep avachart
+CURRENT   NAME                                                                                 CLUSTER                                                 AUTHINFO                                                             NAMESPACE
+          admin                                                                                nokiavf                                                 admin                                                                
+*         avachart/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443/system:admin          api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443   system:admin/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443   avachart
+
+#set current-context as in your Namespace#
+oc config use-context avachart/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443/system:admin
+```
+  
+- **Example of run chart-verifier from podman**
 ```bash
 podman run -e KUBECONFIG=/ava/kubeconfig.sno -v ${PWD}:/ava:Z  \
        --rm   quay.io/redhat-certification/chart-verifier verify /ava/samplechart \
