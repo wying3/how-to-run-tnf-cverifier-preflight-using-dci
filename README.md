@@ -19,6 +19,7 @@ Table of Contents
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
       * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
+      * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
 
 # How To Run TNF Cert, Chart-Verifier, Preflight using DCI
 ## Purpose of this Repository
@@ -365,7 +366,7 @@ ok: [jumphost] => {
 PLAY RECAP *********************************************************************
 jumphost                   : ok=216  changed=90   unreachable=0    failed=0    skipped=50   rescued=0    ignored=1    
 ```
-![Chart-Verifier-CI-IO-Test-Results](img/DciTNF-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
+![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult "DCI Chart-Verifier TestResults")
 
 ### Use DCI to run TNF test Suite  
   - **Settings Contents for TNF Test Suite**
@@ -409,3 +410,13 @@ dci-container-with-preflight
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type TNF --podname dci-dci-container-7b9669f68d-pxwf4
 ```
+```bash
+TASK [Final step] **************************************************************
+ok: [jumphost] => {
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/5f4f67e5-d641-4432-86fe-92eb5a3dcf5b/jobStates"
+}
+
+PLAY RECAP *********************************************************************
+jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1     
+```
+![TNF-CI-IO-Test-Results](img/DciTNF-CI-Job-TestResult.png "DCI TNF TestResults")
