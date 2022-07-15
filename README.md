@@ -359,12 +359,53 @@ dci-container-with-preflight
 ```bash
 TASK [Final step] **************************************************************
 ok: [jumphost] => {
-    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/5f4f67e5-d641-4432-86fe-92eb5a3dcf5b/jobStates"
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/30a016b8-2300-46c3-87f8-30e827f51102/jobStates"
 }
 
 PLAY RECAP *********************************************************************
-jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1   
+jumphost                   : ok=216  changed=90   unreachable=0    failed=0    skipped=50   rescued=0    ignored=1    
 ```
-![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
+![Chart-Verifier-CI-IO-Test-Results](img/DciTNF-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
 
-- **Use DCI to run TNF test Suite**
+### Use DCI to run TNF test Suite  
+  - **Settings Contents for TNF Test Suite**
+```yaml
+---
+dci_topic: OCP-4.9
+dci_name: Test TNF v4.0.1 Using DCI
+dci_configuration: Test TNF Certs Using DCI inside a container
+do_cnf_cert: true
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+tnf_suites: >-
+  access-control
+  networking
+  observability
+  platform-alteration
+tnf_postrun_delete_resources: false
+dci_openshift_app_ns: dci-tnf-test
+dci_teardown_on_success: false
+tnf_log_level: trace
+dci_disconnected: false
+tnf_config:
+  - namespace: dci-tnf-test
+    targetpodlabels:
+      - app=dci-tnf-test
+    operators_regexp:
+    exclude_connectivity_regexp:
+test_network_function_version: v4.0.1
+```
+  - **Files structure of Chart-Verifier**
+```bash
+tree dci-container-with-preflight
+dci-container-with-preflight
+├── dcirc.sh
+├── dci-runner.sh
+├── install.yml
+├── kubeconfig
+├── settings.yml
+├── start-dci-container-runner.sh
+```
+   - **Start DCI Container Runner to test TNF Certification**
+```diff
++ bash start-dci-container-runner.sh --namespace dci --type TNF --podname dci-dci-container-7b9669f68d-pxwf4
+```
