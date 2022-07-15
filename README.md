@@ -2,11 +2,11 @@
 This GIT repository is to show how to use DCI as centralize tool to run the following tests TNF Test Suite, Helm Chart-verifier and Preflight (Scan the image).
 
 ## Pre-requisites
-- **One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission**
-- **An Openshift cluster either SNO or Compact/Hub Cluster**
-- **An account that can access to ci.io with DCI client-id and secrets https://www.distributed-ci.io/remotecis**
-- **An real CNF application or a test-app that need to label them specifically and update to settings.yml**
-- **Helm Chart testing needs to have a helmchart repository with index release if enable-helm-chart-testing**  
+- One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission**
+- An Openshift cluster either SNO or Compact/Hub Cluster**
+- An account that can access to ci.io with DCI client-id and secrets https://www.distributed-ci.io/remotecis
+- An real CNF application or a test-app that need to label them specifically and update to settings.yml
+- Helm Chart testing needs to have a helmchart repository with index release if enable-helm-chart-testing  
   [Example-of-helm-chart-release](https://github.com/ansvu/samplechart2/releases/tag/samplechart-0.1.3)
 
 ## Build DCI container image with dci's requirements and preflight binary inside the image
@@ -25,7 +25,7 @@ This GIT repository is to show how to use DCI as centralize tool to run the foll
 ```
 
 ## Prepare and Deploy DCI Container using helm chart
-- **Update helm chart values.yaml**
+### Update helm chart values.yaml
 ```yaml
 global:
   imagePullSecrets:
@@ -61,7 +61,7 @@ dcinetipvlan:
   type: static
   cidr: 192.168.30.0/27
   allocationPoolStartIp: 192.168.30.20
-  allocationPoolEndIp: 192.168.30.20
+  allocationPoolEndIp: 192.168.30.21
   routes:
   - dst: 172.168.20.0/24
     gw: 192.168.30.1
@@ -79,18 +79,23 @@ resources:
     cpu: 2
     memory: 4Gi
 ```
-**Note:** serviceAccount name and namespace must be used same name on step when add SCC privileged.
+- **Helm Chart Values Modification Options**  
+   * ServiceAccount name and namespace must be used same name on step when add SCC privileged.
+   * Adjust resources limits/requests of CPU and Memory according to your application SIZE
+   * NodeSelector that allow kubernetes to deploy DCI container on specific node true/false
+   * ImagePullSecret is enabled when you have a private registry server that need to autheticate.
 
-- **Create Namespace and add SCC to SA user as priviledge**
+### Create Namespace and add SCC to SA user as priviledge
 ```diff
 + oc create namespace dci
 + oc add-scc-to-user privileged system:serviceaccount:dci:dci-container-sa
 ```
-- **Label the SNO or master/worker nodes if nodeSelector is used tell kubernetes to allocate this dci-container POD to specific node**
+### Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node
 ```diff
 + oc get no -o NAME | cut -d/ -f2|xargs -I V oc label node V dci=container
 ```
-- **Deploy DCI Container using helmchart**
+
+### Deploy DCI Container using helmchart
 ```diff
 + helm install dci dci-container/ -n dci --wait
 + helm ls -n dci
@@ -126,9 +131,10 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
-- **Scale out additional DCI Container for more users**  
+
+### Scale out additional DCI Container for more users
   - if there are more users need to test for different CNF application  
-    we can scale out additional DCI Container PODs if NAD has a range of more then one IP Addreses
+    we can scale out additional DCI Container PODs if NAD has a range of more than one IP Addreses
 ```diff
 + oc scale Deployment/dci-dci-container --replicas=2 -n dci
 deployment.apps/dci-dci-container scaled
