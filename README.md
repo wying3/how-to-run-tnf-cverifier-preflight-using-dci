@@ -269,8 +269,8 @@ samplechart
 samplechart_0_1_2_tgz
 ```
 
-## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
-- **Use DCI to run Preflight**
+## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
+### Use DCI to Test Preflight
   - **Settings Contents for Preflight**
 ```yaml
 ---
@@ -324,7 +324,7 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
 ```
 ![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
 
-- **Use DCI to run Chart-Verifier**
+### Use DCI to run Chart-Verifier  
   - **Settings Contents for Chart-Verifier**
 ```yaml
 ---
@@ -337,7 +337,7 @@ dci_openshift_app_ns: avachart
 dci_teardown_on_success: false
 dci_disconnected: false
 ```
-  - **Files structure**
+  - **Files structure of Chart-Verifier**
 ```bash
 tree dci-container-with-preflight
 dci-container-with-preflight
