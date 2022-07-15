@@ -1,6 +1,7 @@
 Table of Contents
 =================
 
+* [Table of Contents](#table-of-contents)
 * [How To Run TNF Cert, Chart-Verifier, Preflight using DCI](#how-to-run-tnf-cert-chart-verifier-preflight-using-dci)
    * [Purpose of this Repository](#purpose-of-this-repository)
    * [Pre-requisites](#pre-requisites)
@@ -16,7 +17,8 @@ Table of Contents
       * [TNF Test Suite](#tnf-test-suite)
       * [Chart-verifier](#chart-verifier)
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
-
+      * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
+      * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
 
 # How To Run TNF Cert, Chart-Verifier, Preflight using DCI
 ## Purpose of this Repository
