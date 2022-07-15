@@ -271,7 +271,26 @@ samplechart_0_1_2_tgz
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images
 - **Use DCI to run Preflight**
-  - Files structure
+  - **Settings Contents for Preflight**
+```yaml
+---
+dci_topic: OCP-4.9
+dci_name: TestPreflightFromDCIContainer
+dci_configuration: Run Preflight container image from DCI
+#do_preflight_tests: true #Operator Bundle Image Testing
+preflight_test_certified_image: true
+
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+preflight_containers_to_certify:
+  - container_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
+  #- pyxis_container_identifier: "628b8f2819e6793741575daa"
+
+#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+```
+**Note:** To skip image submission to catalog, see above in #'s for pyxis  
+          If there are more than one container images to be tested, the add more '- container_image' under preflight_containers_to_certify
+
+  - **Files structure Of Preflight**
 ```bash
 tree dci-container-with-preflight
 dci-container-with-preflight
@@ -285,7 +304,7 @@ dci-container-with-preflight
 ├── settings.yml
 ├── start-dci-container-runner.sh
 ```
-   - Start DCI Container Runner to test Preflight
+   - **Start DCI Container Runner to test Preflight**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
 Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cert.redhat.com:6443".
@@ -306,7 +325,19 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
 ![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
 
 - **Use DCI to run Chart-Verifier**
-  - Files structure
+  - **Settings Contents for Chart-Verifier**
+```yaml
+---
+dci_topic: OCP-4.9
+dci_name: TestDCIWithChart-Verifier
+dci_configuration: DCI Chart-verifier
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+do_chart_verifier: true
+dci_openshift_app_ns: avachart
+dci_teardown_on_success: false
+dci_disconnected: false
+```
+  - **Files structure**
 ```bash
 tree dci-container-with-preflight
 dci-container-with-preflight
@@ -319,7 +350,7 @@ dci-container-with-preflight
 ├── github_token.txt
 ├── start-dci-container-runner.sh
 ```
-   - Start DCI Container Runner to test Chart-Verifier
+   - **Start DCI Container Runner to test Chart-Verifier**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-7b9669f68d-pxwf4
 ```
