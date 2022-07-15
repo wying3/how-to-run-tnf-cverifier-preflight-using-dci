@@ -2,6 +2,7 @@ Table of Contents
 =================
 
 * [how-to-run-tnf-chart-verifier-preflight-using-dci](#how-to-run-tnf-chart-verifier-preflight-using-dci)
+   * [Purpose of this Repository](#purpose-of-this-repository)
    * [Pre-requisites](#pre-requisites)
    * [Build DCI container image with dci's requirements and preflight binary inside the image](#build-dci-container-image-with-dcis-requirements-and-preflight-binary-inside-the-image)
    * [Build DCI container image with dci's requirements only](#build-dci-container-image-with-dcis-requirements-only)
@@ -18,6 +19,8 @@ Table of Contents
 
 
 # how-to-run-tnf-chart-verifier-preflight-using-dci
+## Purpose of this Repository
+
 The main purpose of this GIT repository is solely to show how to use DCI as centralize tool to run the following tests:
 - [x] TNF Test Suite Certification
 - [x] Helm Chart-verifier
