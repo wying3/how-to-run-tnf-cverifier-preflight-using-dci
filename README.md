@@ -360,11 +360,11 @@ dci-container-with-preflight
 ```bash
 TASK [Final step] **************************************************************
 ok: [jumphost] => {
-    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/30a016b8-2300-46c3-87f8-30e827f51102/jobStates"
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/5f4f67e5-d641-4432-86fe-92eb5a3dcf5b/jobStates"
 }
 
 PLAY RECAP *********************************************************************
-jumphost                   : ok=216  changed=90   unreachable=0    failed=0    skipped=50   rescued=0    ignored=1    
+jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1     
 ```
 ![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult "DCI Chart-Verifier TestResults")
 
@@ -413,10 +413,10 @@ dci-container-with-preflight
 ```bash
 TASK [Final step] **************************************************************
 ok: [jumphost] => {
-    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/5f4f67e5-d641-4432-86fe-92eb5a3dcf5b/jobStates"
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/30a016b8-2300-46c3-87f8-30e827f51102/jobStates"
 }
 
 PLAY RECAP *********************************************************************
-jumphost                   : ok=113  changed=37   unreachable=0    failed=0    skipped=37   rescued=0    ignored=1     
+jumphost                   : ok=216  changed=90   unreachable=0    failed=0    skipped=50   rescued=0    ignored=1    
 ```
 ![TNF-CI-IO-Test-Results](img/DciTNF-CI-Job-TestResult.png "DCI TNF TestResults")
