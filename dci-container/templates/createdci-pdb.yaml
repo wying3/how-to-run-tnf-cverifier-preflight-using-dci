@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "dci-container.fullname" . }}  
+  namespace: {{ .Release.Namespace }}
+spec:
+  #maxUnavailable: 1
+  minAvailable: 1
+  selector:
+    matchLabels:
+     {{- include "dci-container.selectorLabels" . | nindent 6 }}

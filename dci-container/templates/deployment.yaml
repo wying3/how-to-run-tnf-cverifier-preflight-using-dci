@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dci-container.fullname" . }}
+  labels:
+    {{- include "dci-container.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "dci-container.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: {{ .Values.dcinetipvlan.name }}              
+      labels:
+        {{- include "dci-container.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+      {{- if eq .Values.global.imagePullSecrets.enabled true }}
+      - name: {{ .Values.global.imagePullSecrets.name }}            
+      {{- end }}
+      serviceAccountName: {{ include "dci-container.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.global.repository }}/{{ .Values.image.dcipreflight.imgname }}:{{ .Values.image.dcipreflight.tag }}
+          command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 3600 ; done"]
+          imagePullPolicy: {{ .Values.image.dcipreflight.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+      {{- if eq .Values.global.nodeselector.enabled true }}
+        "{{ .Values.global.nodeselector.key }}" : "{{ .Values.global.nodeselector.value }}"
+      {{- end }}
