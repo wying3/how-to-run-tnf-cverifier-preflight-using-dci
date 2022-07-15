@@ -294,7 +294,7 @@ Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cer
 20220715-20:17:28 Uses resource /etc/dci-openshift-app-agent/dcirc.sh.
 ......
 ```
-```ansible
+```bash
 TASK [Final step] **************************************************************
 ok: [jumphost] => {
     "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/0f81cc11-6e7c-47a9-9cf5-967c8572f1ec/jobStates"
