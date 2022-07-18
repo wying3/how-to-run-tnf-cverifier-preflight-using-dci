@@ -27,14 +27,14 @@ Table of Contents
 # How To Run TNF Cert, Chart-Verifier, Preflight using DCI
 ## Purpose of this Repository
 
-The main purpose of this GIT repository is solely to show how to use DCI as centralize tool to run the following tests:
+The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following tests:
 - [x] TNF Test Suite Certification
 - [x] Helm Chart-verifier
 - [x] Preflight to scan the image for CVE and security checking  
 
 Additional, this respository will aim to show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 tests inside a Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
   
-In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 steps without using DCI tool for references/troubleshooting.
+In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
@@ -111,15 +111,16 @@ securityContext:
 resources:
   limits:
     cpu: 4
-    memory: 8Gi
+    memory: 4Gi
   requests:
     cpu: 2
-    memory: 4Gi
+    memory: 2Gi
 ```
 - **Helm Chart Values Modification Options**  
    * ServiceAccount name and namespace must be used same name on step when add SCC privileged.
-   * Adjust resources limits/requests of CPU and Memory according to your application SIZE
-   * NodeSelector that allow kubernetes to deploy DCI container on specific node true/false
+   * Adjust resources limits/requests of CPU and Memory according to your application SIZE.
+   * Test TNF Cert with 40 PODs, CPU reached 1200mc(1.2vCPU) and Memory had reached to 1Gi.
+   * NodeSelector that allow kubernetes to deploy DCI container on specific node true/false.
    * ImagePullSecret is enabled when you have a private registry server that need to autheticate.
 
 ### Create Namespace and add SCC to SA user as priviledge
