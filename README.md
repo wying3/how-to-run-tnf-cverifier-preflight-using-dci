@@ -19,6 +19,7 @@ Table of Contents
       * [Preflight Manual](#preflight-manual)
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
       * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
+      * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
 * [License](#license)
@@ -346,7 +347,12 @@ samplechart_0_1_2_tgz
 
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
-### Use DCI to Test Preflight
+
+**Note:** Using DCI to run preflight with container image is not supported and the function was removed During the test.  
+DCI Developer team had added the feature back to support DCI to run with Preflight on container image as described on this Jira  
+https://issues.redhat.com/browse/CILAB-685  
+
+### Use DCI to Test Preflight with container image
   - **Settings Contents for Preflight**
 ```yaml
 ---
@@ -403,7 +409,30 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
   - **Links for more options of using DCI to Run Preflight**  
     https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/README.md    
     https://github.com/redhat-openshift-ecosystem/openshift-preflight/blob/main/docs/RECIPES.md
-    
+
+### Use DCI to Test Preflight with Operator Bundle Image
+  - **Settings Contents for Preflight Operator Bundle Images**
+```yaml
+---
+dci_topic: OCP-4.9
+dci_name: TestPreflight Operator Bundle Image Using DCI
+dci_configuration: Run Preflight Operator Bundle Image from DCI
+do_preflight_tests: true
+#preflight_test_certified_image: true
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+preflight_operators_to_certify:
+  - bundle_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
+  #- index_image:  "optional"
+  # https://connect.redhat.com/projects/628b8f2819e6793741575daa/overview
+  #- pyxis_container_identifier: "628b8f2819e6793741575daa"
+
+# To generate it: connect.redhat.com -> Product certification -> Container API Keys -> Generate new key
+#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+```
+  - **When Testing Preflight with Operator Bundle image**  
+    The CNF operator image must be compiled as Bundle and reference indices to other images.
+  - **Partner should follow this procedure** [Build-Operator-Bundle-Image](https://olm.operatorframework.io/docs/tasks/creating-operator-bundle)  
+  
 ### Use DCI to run Chart-Verifier  
   - **Settings Contents for Chart-Verifier**
 ```yaml
