@@ -18,7 +18,7 @@ Table of Contents
       * [Chart-verifier Manual](#chart-verifier-manual)
       * [Preflight Manual](#preflight-manual)
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
-      * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
+      * [Use DCI to Test Preflight with container image](#use-dci-to-test-preflight-with-container-image)
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
