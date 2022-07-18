@@ -1,7 +1,8 @@
 #!/bin/bash
 
 print_help() {
-    echo "------------------------------------------------------------------------------------------------------------------------
+    echo "
+         ------------------------------------------------------------------------------------------------------------------------
          Usage: bash $0  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
 	 Usage: bash $0 [-h | --help]
          Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
