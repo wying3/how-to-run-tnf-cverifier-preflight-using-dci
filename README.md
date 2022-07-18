@@ -1,7 +1,6 @@
 Table of Contents
 =================
 
-* [Table of Contents](#table-of-contents)
 * [How To Run TNF Cert, Chart-Verifier, Preflight using DCI](#how-to-run-tnf-cert-chart-verifier-preflight-using-dci)
    * [Purpose of this Repository](#purpose-of-this-repository)
    * [Pre-requisites](#pre-requisites)
@@ -172,6 +171,28 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
+### Files are required are inside DCI Container
+```bash
+/etc/dci-openshift-app-agent
+ ── dcirc.sh
+├── dcirc.sh.dist
+├── hooks
+│   ├── install.yml (--- dummy)
+│   ├── post-run.yml
+│   ├── pre-run.yml
+│   ├── teardown.yml
+│   └── tests.yml
+├── hosts.yml
+└── settings.yml
+
+Other Files:
+ls -1 /var/lib/dci-openshift-app-agent/
+auth.json
+dci-runner.sh
+helm-charts-cmm.yml
+kubeconfig
+pyxis-apikey.txt
+```
 
 ### Scale out additional DCI Container for more users
   - if there are more users need to test for different CNF application  
@@ -199,8 +220,53 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 <br />
 
 ## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links
-### TNF Test Suite
-### Chart-verifier  
+### TNF Test Suite Manual
+- **Using Podman**
+```diff
++ podman run --rm --network host -v /root/openshift/install_dir/auth/kubeconfig:/usr/tnf/kubeconfig/config:Z -v /root/certification_6/test-network-function-main/test-network-function:/usr/tnf/config:Z -v /root/certification_6/output_lifecycle:/usr/tnf/claim:Z -e KUBECONFIG=/usr/tnf/kubeconfig/config -e TNF_MINIKUBE_ONLY=false -e TNF_NON_INTRUSIVE_ONLY=false -e TNF_DISABLE_CONFIG_AUTODISCOVER=false -e TNF_PARTNER_NAMESPACE=npv-cmm-34 -e LOG_LEVEL=debug -e PATH=/usr/bin:/usr/local/oc/bin quay.io/testnetworkfunction/test-network-function:v4.0.1 
+```
+- **Using Container Shellscript(Podman as default)**  
+  - **Example of TNF CONFIG**  
+  Make sure you have a targetNameSpaces tnf or any other Namespace with PODs are running  
+```yaml
+targetNameSpaces:
+  - name: tnf
+targetPodLabels:
+  - prefix: test-network-function.com
+    name: generic
+    value: target
+targetCrdFilters:
+  - nameSuffix: "group1.test.com"
+  - nameSuffix: "test-network-function.com"
+certifiedcontainerinfo:
+  - name: nginx-116  # working example
+    repository: rhel8
+certifiedoperatorinfo:
+  - name: etcd
+    organization: community-operators # working example
+```
+   - **TNF Directory Structure**
+```bash
+tree tnf/
+tnf/
+├── claim
+├── config
+│   └── tnf_config.yml
+├── kubeconfig.westd1
+├── output
+│   ├── claim.json
+│   └── cnf-certification-tests_junit.xml
+└── tnf_config.yml
+```
+```diff
++ ./run-tnf-container.sh -k ~/.kube/config -t ~/tnf/config -o ~/tnf/output -f networking access-control -s access-control-host-resource-PRIVILEGED_POD
++ ./run-tnf-container.sh -i quay.io/testnetworkfunction/test-network-function:v4.0.1 -o ~/tnf/output/ -k ~/tnf/config/kubeconfig.westd1 -t ~/tnf/config -f platform-alteration -s platform-alteration-tainted-node-kernel -s platform-alteration-hugepages-config
+```
+   - **TNF Cert Links**  
+https://github.com/test-network-function/cnf-certification-test#general-tests  
+https://redhat-connect.gitbook.io/openshift-badges/badges/cloud-native-network-functions-cnf  
+
+### Chart-verifier Manual  
 - **Check current-context belong to your CNF Namespace**
   - Edit the kubeconfig then search current-context and update to your CNF application namespace
   - Or use oc config cmd, so if current-context name is not YOURs, then do following:
@@ -271,6 +337,8 @@ ls -1 ~/.cache/chart-verifier/
 samplechart
 samplechart_0_1_2_tgz
 ```
+### Run Preflight Manual  
+
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
 ### Use DCI to Test Preflight
@@ -327,9 +395,14 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
 ```
 ![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
 
+  - **Links for more options of using DCI to Run Preflight**  
+    https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/README.md    
+    https://github.com/redhat-openshift-ecosystem/openshift-preflight/blob/main/docs/RECIPES.md
+    
 ### Use DCI to run Chart-Verifier  
   - **Settings Contents for Chart-Verifier**
 ```yaml
+settings.yml:
 ---
 dci_topic: OCP-4.9
 dci_name: TestDCIWithChart-Verifier
@@ -339,6 +412,21 @@ do_chart_verifier: true
 dci_openshift_app_ns: avachart
 dci_teardown_on_success: false
 dci_disconnected: false
+```
+- **Helm Config for Chart-Verifier**  
+```yaml
+helm_config.yaml:
+partner_name: telcoci CMM
+partner_email: telco.cmm@nokia.com
+github_token_path: "/opt/cache/token.txt"
+dci_charts:
+  -
+    name: sameplechart2
+    chart_file: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/samplechart-0.1.3.tgz
+    #chart_values: https://github.com/ansvu/samplechart2/blob/main/samplechart/values.yaml
+    #install: true
+    deploy_chart: true
+    create_pr: false
 ```
   - **Files structure of Chart-Verifier**
 ```bash
@@ -368,6 +456,11 @@ jumphost                   : ok=113  changed=37   unreachable=0    failed=0    s
 ```
 ![Chart-Verifier-CI-IO-Test-Results](img/DciChartVerifier-CI-Job-TestResult.png "DCI Chart-Verifier TestResults")
 
+  - **Links for more options of using DCI to Run Chart-Verifier**  
+    https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/chart-verifier/README.md  
+    https://github.com/redhat-certification/chart-verifier/blob/main/docs/helm-chart-checks.md#run-helm-chart-checks  
+    https://github.com/redhat-certification/chart-verifier
+    
 ### Use DCI to run TNF test Suite  
   - **Settings Contents for TNF Test Suite**
 ```yaml
@@ -420,3 +513,8 @@ PLAY RECAP *********************************************************************
 jumphost                   : ok=216  changed=90   unreachable=0    failed=0    skipped=50   rescued=0    ignored=1    
 ```
 ![TNF-CI-IO-Test-Results](img/DciTNF-CI-Job-TestResult.png "DCI TNF TestResults")
+
+  - **Links for more options of using DCI to Run TNF Test Suite**  
+    https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/cnf-cert  
+    https://github.com/test-network-function/cnf-certification-test
+    https://github.com/test-network-function/cnf-certification-test#general-tests
