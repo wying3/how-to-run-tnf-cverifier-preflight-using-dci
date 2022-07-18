@@ -15,6 +15,7 @@ Table of Contents
    * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual-examples-and-links)
       * [TNF Test Suite](#tnf-test-suite)
       * [Chart-verifier](#chart-verifier)
+      * [Preflight Manual](#preflight-manual)
    * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
       * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
@@ -337,7 +338,7 @@ ls -1 ~/.cache/chart-verifier/
 samplechart
 samplechart_0_1_2_tgz
 ```
-### Run Preflight Manual  
+### Preflight Manual  
 
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
