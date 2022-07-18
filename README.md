@@ -35,7 +35,9 @@ The main purpose of this repository is solely to show how to use DCI as centrali
 
 Additional, this respository will aim to show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 tests inside a Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
   
-In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.
+In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.  
+
+**Note:** dci-runner.sh is from David it will collect all components version and then added as dci_tags so DCI CI Web GUI can be seen and useful
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
@@ -177,10 +179,10 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
-### Files are required are inside DCI Container
+### Files are required are inside DCI Container after it populated automatic from start-dci-container-runner.sh
 ```bash
 /etc/dci-openshift-app-agent
- ── dcirc.sh
+ ── dcirc.sh ---> contents of https://www.distributed-ci.io/remotecis
 ├── dcirc.sh.dist
 ├── hooks
 │   ├── install.yml (--- dummy)
@@ -189,7 +191,7 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 │   ├── teardown.yml
 │   └── tests.yml
 ├── hosts.yml
-└── settings.yml
+└── settings.yml ---> Each test type has different contents e.g. chart-verifier, preflight and TNF Cert
 
 Other Files:
 ls -1 /var/lib/dci-openshift-app-agent/
@@ -385,6 +387,20 @@ dci-container-with-preflight
 ├── settings-preflight.yml
 ├── settings.yml
 ├── start-dci-container-runner.sh
+```
+  
+   - **Shellscript start-dci-container-runner.sh usage**
+```bash
+./start-dci-container-runner.sh
+------------------------------------------------------------------------------------------------------------------------
+Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
+Usage: bash ./start-dci-container-runner.sh [-h | --help]
+
+Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
+          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
+
+Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+------------------------------------------------------------------------------------------------------------------------
 ```
    - **Start DCI Container Runner to test Preflight**
 ```diff
