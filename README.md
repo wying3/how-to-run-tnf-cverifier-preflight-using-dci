@@ -21,6 +21,8 @@ Table of Contents
       * [Use DCI to Test Preflight](#use-dci-to-test-preflight)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
+* [License](#license)
+* [Contact](#contact)
 
 # How To Run TNF Cert, Chart-Verifier, Preflight using DCI
 ## Purpose of this Repository
@@ -521,10 +523,10 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
     
-## License
+# License
 Apache License, Version 2.0 (see LICENSE file)
 
-## Contact
+# Contact
 Email: Distributed-CI Team distributed-ci@redhat.com  
 Email: avu@redhat.com for any issue related when using DCI to test/run inside a container
 
