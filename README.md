@@ -520,3 +520,13 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/cnf-cert  
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
+    
+## License
+Apache License, Version 2.0 (see LICENSE file)
+
+## Contact
+Email: Distributed-CI Team distributed-ci@redhat.com  
+Email: avu@redhat.com for any issue related when using DCI to test/run inside a container
+
+
+
