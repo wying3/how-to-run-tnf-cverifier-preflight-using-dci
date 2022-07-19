@@ -124,7 +124,7 @@ resources:
    * Adjust resources limits/requests of CPU and Memory according to your application SIZE.
    * Test TNF Cert with 40 PODs, CPU reached 1200mc(1.2vCPU) and Memory had reached to 1Gi.
    * NodeSelector that allow kubernetes to deploy DCI container on specific node true/false.
-   * ImagePullSecret is enabled when you have a private registry server that need to autheticate.
+   * ImagePullSecret is enabled when you have a private registry server that need to be authenticated.
 
 ### Create Namespace and add SCC to SA user as priviledge
 ```diff
@@ -345,6 +345,17 @@ samplechart
 samplechart_0_1_2_tgz
 ```
 ### Preflight Manual  
+- **Run Preflight on Helper Node/VM**
+```diff
++ preflight check container quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16exx --certification-project-id 628b8f2819e6793741575dxx --pyxis-api-token ff7xuabtckq35060wjvuow4ruky83txx -d /var/lib/dci-openshift-app-agent/auth.json
+```
+- **Similarly Run Preflight Inside Container**
+```diff
+[root@dci-chart-dci-container-f779b9b6-zt6xn /]# 
++ preflight check container quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16exx --certification-project-id 628b8f2819e6793741575dxx --pyxis-api-token ff7xuabtckq35060wjvuow4ruky83txx -d /root/auth.json
+```
+**More Options from Preflight Main Site**  
+https://github.com/redhat-openshift-ecosystem/openshift-preflight
 
 
 ## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
