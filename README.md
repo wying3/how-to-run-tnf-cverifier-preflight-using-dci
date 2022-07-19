@@ -52,16 +52,16 @@ In matter of facts, it has an extra benefits, for example, the user can also a p
 ## Build DCI container image with dci's requirements and preflight binary inside the image
 ```diff
 + git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
-+ podman build -t dci-container-tpc:v1 -f ./Dockerfile-WithPreflight
-+ podman tag dci-container-tpc:v1 quay.io/avu0/dci-container-tpc:v1
-+ podman push quay.io/avu0/dci-container-tpc:v1
++ podman build -t dci-container-tpc:v4 -f ./Dockerfile-WithPreflight
++ podman tag dci-container-tpc:v4 quay.io/avu0/dci-container-tpc:v1
++ podman push quay.io/avu0/dci-container-tpc:v4
 ```
   
 ## Build DCI container image with dci's requirements only
 ```diff
-+ podman build -t dci-container-tpc:v1 -f ./Dockerfile
-+ podman tag dci-container-tpc:v1 quay.io/avu0/dci-container-tpc:v1
-+ podman push quay.io/avu0/dci-container-tpc:v1
++ podman build -t dci-container-tpc:v3 -f ./Dockerfile
++ podman tag dci-container-tpc:v3 quay.io/avu0/dci-container-tpc:v3
++ podman push quay.io/avu0/dci-container-tpc:v3
 ```
   
 ## Prepare and Deploy DCI Container using helm chart
