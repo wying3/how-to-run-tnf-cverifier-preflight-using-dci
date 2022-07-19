@@ -412,7 +412,7 @@ Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --po
 Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
 ------------------------------------------------------------------------------------------------------------------------
 ```
-   - **Start DCI Container Runner to test Preflight**
+   - **Start DCI Container Runner to test Preflight Container Image**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
 Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cert.redhat.com:6443".
@@ -430,13 +430,11 @@ ok: [jumphost] => {
 PLAY RECAP *********************************************************************
 jumphost                   : ok=118  changed=41   unreachable=0    failed=0    skipped=34   rescued=0    ignored=1   
 ```
-![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight TestResults")
+![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight Container Image TestResults")
+  
+### Use DCI to Test Preflight with Operator Bundle Image  
+**Note:** On a connected environment, index_image parameter is MANDATORY!  
 
-  - **Links for more options of using DCI to Run Preflight**  
-    https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/README.md    
-    https://github.com/redhat-openshift-ecosystem/openshift-preflight/blob/main/docs/RECIPES.md
-
-### Use DCI to Test Preflight with Operator Bundle Image
   - **Settings Contents for Preflight Operator Bundle Images**
 ```yaml
 ---
@@ -458,6 +456,31 @@ preflight_operators_to_certify:
   - **When Testing Preflight with Operator Bundle image**  
     The CNF operator image must be compiled as Bundle and reference indices to other images.
   - **Partner should follow this procedure** [Build-Operator-Bundle-Image](https://olm.operatorframework.io/docs/tasks/creating-operator-bundle)  
+
+   - **Start DCI Container Runner to test Preflight Operator Bundle Image**
+```diff
++ bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
+22/07/19 16:16:24 INFO : Copying pyxis-apikey.txt and auth.json files to dci-dci-container-f5755784-mxs44:/var/lib/dci-openshift-app-agent
+22/07/19 16:16:28 INFO : Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig to dci-dci-container-f5755784-mxs44:/etc/dci-openshift-app-agent/
+22/07/19 16:16:35 INFO : Start DCI Container Runner for PREFLIGHT Testing Type....
+20220719-21:16:36 Uses resource /etc/dci-openshift-app-agent/dcirc.sh.
+```
+```bash
+TASK [Final step] **************************************************************
+ok: [jumphost] => {
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/ab979a84-8c32-4809-932e-37988aecf15c/jobStates"
+}
+
+PLAY RECAP *********************************************************************
+jumphost                   : ok=187  changed=69   unreachable=0    failed=0    skipped=47   rescued=0    ignored=4   
+```
+![PreflightOper-Ci-Test-Results](img/DciPreflightOpera-Ci-TestResults.png "DCI Preflight Operator Bundle Image TestResults")
+![PreflightOper-Ci-Test-Results2](img/DciPreflightOperator-Ci-TestResult2.png "DCI Preflight Operator Bundle Image TestResults2")
+  
+  - **Links for more options of using DCI to Run Preflight**  
+    https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/README.md    
+    https://github.com/redhat-openshift-ecosystem/openshift-preflight/blob/main/docs/RECIPES.md
+    https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/preflight#operator-end-to-end-certification
   
 ### Use DCI to run Chart-Verifier  
   - **Settings Contents for Chart-Verifier**
