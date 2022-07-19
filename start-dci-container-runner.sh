@@ -7,7 +7,12 @@ print_help() {
 	 Usage: bash $0 [-h | --help]
          Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
                    bash $0 --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
-	 Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+	 
+	 --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+	 --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
+	 --namespace   --- Namespace of the dci container POD
+	 --podname     --- Pod name where dci openshift agent is installed
+	 --help        --- Usage of the $0
          ------------------------------------------------------------------------------------------------------------------------"
     exit 0
 }
@@ -123,19 +128,22 @@ do
 done
 
 if [[ "$SKIP_COPY" != +(yes|YES) ]]; then
-      logmsg "Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig and other files for Preflight/HelmChartCopying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig and other files for Preflight/HelmChart to to $POD_NAME"
       case $TEST_TYPE in
          CHART)
+	     logmsg "Copying helm-charts-cmm.yml and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
              oc -n $NAMESPACE cp helm_config.yml ${POD_NAME}:/var/lib/dci-openshift-app-agent/helm-charts-cmm.yml
 	     oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              ;;
          PREFLIGHT)
+	     logmsg "Copying pyxis-apikey.txt and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
              oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              oc -n $NAMESPACE cp pyxis-apikey.txt  ${POD_NAME}:/var/lib/dci-openshift-app-agent/pyxis-apikey.txt
-             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'rm -f /var/lib/dci-openshift-app-agent/helm-charts-cmm.yml'
+	     # Why remove helm-chart-xx.yml? cuz dci-runner.sh will check if this file existed, then it will run helm chart also with other test types
+             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'rm -f /var/lib/dci-openshift-app-agent/helm-charts-cmm.yml' >/dev/null 2>&1	     
              ;;
          *) ;;
      esac
+     logmsg "Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig to ${POD_NAME}:/etc/dci-openshift-app-agent/"
      oc -n $NAMESPACE cp settings.yml ${POD_NAME}:/etc/dci-openshift-app-agent/
      oc -n $NAMESPACE cp dcirc.sh ${POD_NAME}:/etc/dci-openshift-app-agent/
      oc -n $NAMESPACE cp install.yml  ${POD_NAME}:/etc/dci-openshift-app-agent/hooks/
