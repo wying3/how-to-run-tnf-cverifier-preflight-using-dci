@@ -13,7 +13,7 @@ Table of Contents
       * [Deploy DCI Container using helmchart](#deploy-dci-container-using-helmchart)
       * [Files are required are inside DCI Container](#files-are-required-are-inside-dci-container)
       * [Scale out additional DCI Container for more users](#scale-out-additional-dci-container-for-more-users)
-   * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual-examples-and-links)
+   * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual)
       * [TNF Test Suite Manual](#tnf-test-suite-manual)
       * [Chart-verifier Manual](#chart-verifier-manual)
       * [Preflight Manual](#preflight-manual)
@@ -226,7 +226,7 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 ```
 <br />
 
-## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual, Examples and Links
+## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual
 ### TNF Test Suite Manual
 - **Using Podman**
 ```diff
