@@ -4,15 +4,15 @@ print_help() {
     echo "
          ------------------------------------------------------------------------------------------------------------------------
          Usage: bash $0  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
-	 Usage: bash $0 [-h | --help]
+         Usage: bash $0 [-h | --help]
          Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
                    bash $0 --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
-	 
-	 --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
-	 --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
-	 --namespace   --- Namespace of the dci container POD
-	 --podname     --- Pod name where dci openshift agent is installed
-	 --help        --- Usage of the $0
+         
+         --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+         --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
+         --namespace   --- Namespace of the dci container POD
+         --podname     --- Pod name where dci openshift agent is installed
+         --help        --- Usage of the $0
          ------------------------------------------------------------------------------------------------------------------------"
     exit 0
 }
@@ -46,7 +46,7 @@ for i in "$@"; do
             shift 2
             continue
         fi
-        ;;	
+        ;;
     -h | -\? | --help)
         print_help
         shift #
@@ -86,26 +86,26 @@ logerr() {
     exit 1
 }
 
-oc project ${NAMESPACE}
-if [ $? -ne 0 ]; then
-    echo "OCP Cluster is not accessible, please check it manually!!"
-    exit 0
-fi
+#oc project ${NAMESPACE}
+#if [ $? -ne 0 ]; then
+#    echo "OCP Cluster is not accessible, please check it manually!!"
+#    exit 0
+#fi
 
 # Checks whether files or directories exist from David's script
 file_exists() {
-	[ -z "${1-}" ] && bye Usage: file_exists name.
-	ls "$1" >/dev/null 2>&1
+        [ -z "${1-}" ] && bye Usage: file_exists name.
+        ls "$1" >/dev/null 2>&1
 }
 # Prints all parameters and exits with the error code.
 bye() {
-	log "$*"
-	exit 1
+        log "$*"
+        exit 1
 }
 
 # Prints all parameters to stdout, prepends with a timestamp.
 log() {
-	printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
+        printf '%s %s\n' "$(date +"%Y%m%d-%H:%M:%S")" "$*"
 }
 
 ##Add checking if these 4 files are present before start copy to the pods##
@@ -113,10 +113,10 @@ case $TEST_TYPE in
     CHART)
         file_exists "auth.json" || bye "$i: No such file."
         file_exists "helm_config.yml" || bye "$i: No such file"
-	;;
+        ;;
     PREFLIGHT)
         file_exists "auth.json" || bye "$i: No such file."
-        file_exists "pyxis-apikey.txt" || bye "$i: No such file."	    
+        file_exists "pyxis-apikey.txt" || bye "$i: No such file."           
         ;;
     *) ;;
 esac
@@ -127,19 +127,21 @@ do
       file_exists "$i" || bye "$i: No such file."
 done
 
+#Get CNF name from dci-runner.sh#
+CNF_NAME=$(grep 'CNF=' dci-runner.sh |cut -d= -f2)
 if [[ "$SKIP_COPY" != +(yes|YES) ]]; then
       case $TEST_TYPE in
          CHART)
-	     logmsg "Copying helm-charts-cmm.yml and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
-             oc -n $NAMESPACE cp helm_config.yml ${POD_NAME}:/var/lib/dci-openshift-app-agent/helm-charts-cmm.yml
-	     oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
+             logmsg "Copying helm-charts-${CNF_NAME}.yml and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
+             oc -n $NAMESPACE cp helm_config.yml ${POD_NAME}:/var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml
+             oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              ;;
          PREFLIGHT)
-	     logmsg "Copying pyxis-apikey.txt and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
+             logmsg "Copying pyxis-apikey.txt and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
              oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              oc -n $NAMESPACE cp pyxis-apikey.txt  ${POD_NAME}:/var/lib/dci-openshift-app-agent/pyxis-apikey.txt
-	     # Why remove helm-chart-xx.yml? cuz dci-runner.sh will check if this file existed, then it will run helm chart also with other test types
-             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'rm -f /var/lib/dci-openshift-app-agent/helm-charts-cmm.yml' >/dev/null 2>&1	     
+             # Why remove helm-chart-xx.yml? cuz dci-runner.sh will check if this file existed, then it will run helm chart also with other test types
+             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'rm -f /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml' >/dev/null 2>&1          
              ;;
          *) ;;
      esac
