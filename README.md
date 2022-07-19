@@ -11,7 +11,7 @@ Table of Contents
       * [Create Namespace and add SCC to SA user as priviledge](#create-namespace-and-add-scc-to-sa-user-as-priviledge)
       * [Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node](#label-the-sno-or-masterworker-nodes-if-nodeselector-is-enabled-to-allocate-this-dci-container-pod-to-specific-node)
       * [Deploy DCI Container using helmchart](#deploy-dci-container-using-helmchart)
-      * [Files are required are inside DCI Container](#files-are-required-are-inside-dci-container)
+      * [Files are required are inside DCI Container after it populated automatic from start-dci-container-runner.sh](#files-are-required-are-inside-dci-container-after-it-populated-automatic-from-start-dci-container-runnersh)
       * [Scale out additional DCI Container for more users](#scale-out-additional-dci-container-for-more-users)
    * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual)
       * [TNF Test Suite Manual](#tnf-test-suite-manual)
