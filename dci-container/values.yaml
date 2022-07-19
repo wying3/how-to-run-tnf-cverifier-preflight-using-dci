@@ -16,7 +16,7 @@ global:
 image:
   dcipreflight:
     imgname: dci-container-tpc
-    tag: v1
+    tag: v4 #with Preflight,v3->without Preflight Binary
     pullPolicy: IfNotPresent
 
 nameOverride: ""

@@ -141,7 +141,7 @@ if [[ "$SKIP_COPY" != +(yes|YES) ]]; then
              oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              oc -n $NAMESPACE cp pyxis-apikey.txt  ${POD_NAME}:/var/lib/dci-openshift-app-agent/pyxis-apikey.txt
              # Why remove helm-chart-xx.yml? cuz dci-runner.sh will check if this file existed, then it will run helm chart also with other test types
-             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'rm -f /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml' >/dev/null 2>&1          
+             oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c "rm /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml" >/dev/null 2>&1
              ;;
          *) ;;
      esac

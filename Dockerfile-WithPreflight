@@ -1,4 +1,26 @@
-ARG OPENSHIFT_CLIENT_VERSION=4.9.25
+ARG quay_expiration=never
+ARG release_tag=1.21.1
+ARG ARCH=amd64
+ARG OS=linux
+
+FROM docker.io/golang:1.17 AS builder
+ARG quay_expiration
+ARG release_tag
+ARG ARCH
+ARG OS
+
+# Build the preflight binary
+COPY . /go/src/preflight
+WORKDIR /go/src/preflight
+RUN make build RELEASE_TAG=${release_tag}
+
+# ubi8:latest
+FROM registry.access.redhat.com/ubi8/ubi:latest
+ARG quay_expiration
+ARG release_tag
+ARG ARCH
+ARG OS
+
 FROM registry.access.redhat.com/ubi8/ubi:8.4-213
 LABEL name="DCI CNF, Preflight and ChartVerifier" \
       maintainer="cmmman.scm@redhat.com" \
@@ -7,6 +29,28 @@ LABEL name="DCI CNF, Preflight and ChartVerifier" \
       release="" \
       summary="CMM application Pods" \
       description="DCI and Preflight runs certification checks against containers and Operators."
+
+
+# Define that tags should expire after 1 week. This should not apply to versioned releases.
+LABEL quay.expires-after=${quay_expiration}
+
+# Fetch the build image Architecture
+LABEL ARCH=${ARCH}
+LABEL OS=${OS}
+
+# Define versions for dependencies
+ARG OPENSHIFT_CLIENT_VERSION=4.9.25
+ARG OPERATOR_SDK_VERSION=1.14.0
+ARG ARCH
+
+# Add preflight binary
+COPY --from=builder /go/src/preflight/preflight /usr/local/bin/preflight
+
+# Install Operator SDK binray
+RUN curl --fail -Lo /usr/local/bin/operator-sdk https://github.com/operator-framework/operator-sdk/releases/download/v${OPERATOR_SDK_VERSION}/operator-sdk_linux_${ARCH} \
+    && chmod 755 /usr/local/bin/operator-sdk
+
+RUN ls -lrt /usr/local/bin/preflight
 
 RUN mkdir -p /licenses
 COPY License.txt /licenses/License.txt
@@ -48,7 +92,6 @@ RUN mkdir -p /var/lib/shared/overlay-images /var/lib/shared/overlay-layers /var/
 ENV _CONTAINERS_USERNS_CONFIGURED=""
 
 # Install OpenShift client binary
-ARG OPENSHIFT_CLIENT_VERSION
 RUN curl --fail -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${OPENSHIFT_CLIENT_VERSION}/openshift-client-linux-${OPENSHIFT_CLIENT_VERSION}.tar.gz | tar -xzv -C /usr/local/bin oc
 
 RUN pip3 install --force-reinstall ansible
@@ -56,3 +99,4 @@ RUN pip3 install --force-reinstall ansible
 RUN dnf clean all; yum clean all
 #rhbz 1609043
 RUN mkdir -p /var/log/rhsm
+

@@ -2,12 +2,12 @@
 dci_topic: OCP-4.9
 dci_name: TestPreflight Operator Bundle Image Using DCI
 dci_configuration: Run Preflight Operator Bundle Image from DCI
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 do_preflight_tests: true
 #preflight_test_certified_image: true
-partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_operators_to_certify:
-  - bundle_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
-  #- index_image:  "optional"
+  - bundle_image: "quay.io/opdev/simple-demo-operator-bundle:v0.0.6"
+    index_image: "quay.io/opdev/simple-demo-operator-catalog:v0.0.6"
   # https://connect.redhat.com/projects/628b8f2819e6793741575daa/overview
   #- pyxis_container_identifier: "628b8f2819e6793741575daa"
 
