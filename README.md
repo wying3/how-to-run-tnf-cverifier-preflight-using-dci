@@ -37,7 +37,7 @@ Additional, this respository will aim to show how to use DCI to test above 3 mai
   
 In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.  
 
-**Note:** dci-runner.sh is from David it will collect all components version and then added as dci_tags so DCI CI Web GUI can be seen and useful
+**Note:** dci-runner.sh is from David, it will collect all components version and then added as dci_tags and show on the DCI CI Web Gui.  
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
@@ -48,7 +48,7 @@ In matter of facts, it has an extra benefits, for example, the user can also a p
   [Example-of-helm-chart-release](https://github.com/ansvu/samplechart2/releases/tag/samplechart-0.1.3)  
   Or Check out this document I made [Instruction-how-add-helm-chart-to-github](https://docs.google.com/presentation/d/1UEppK33-JMfCO4UzxgeDkL1zZpvIejdwv6lIM3tx4JY/edit?usp=sharing)  
   Or this more harder way original we used [Using CR tooling](https://docs.google.com/document/d/1pBkS0Z1mbbDZpKIytbTfPCSrMFayqUYZ6p2ngCxFkrU/edit?usp=sharing)
-
+  
 ## Build DCI container image with dci's requirements and preflight binary inside the image
 ```diff
 + git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
@@ -56,14 +56,14 @@ In matter of facts, it has an extra benefits, for example, the user can also a p
 + podman tag dci-container-tpc:v1 quay.io/avu0/dci-container-tpc:v1
 + podman push quay.io/avu0/dci-container-tpc:v1
 ```
-
+  
 ## Build DCI container image with dci's requirements only
 ```diff
 + podman build -t dci-container-tpc:v1 -f ./Dockerfile
 + podman tag dci-container-tpc:v1 quay.io/avu0/dci-container-tpc:v1
 + podman push quay.io/avu0/dci-container-tpc:v1
 ```
-
+  
 ## Prepare and Deploy DCI Container using helm chart
 ### Update helm chart values.yaml
 ```yaml
@@ -135,7 +135,6 @@ resources:
 ```diff
 + oc get no -o NAME | cut -d/ -f2|xargs -I V oc label node V dci=container
 ```
-
 ### Deploy DCI Container using helmchart
 ```diff
 + tree dci-container/
