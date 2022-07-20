@@ -54,5 +54,6 @@ RUN curl --fail -L https://mirror.openshift.com/pub/openshift-v4/clients/ocp/${O
 RUN pip3 install --force-reinstall ansible
 
 RUN dnf clean all; yum clean all
+
 #rhbz 1609043
-RUN mkdir -p /var/log/rhsm
+RUN mkdir -p /var/log/rhsm; rm -rf /var/cache/dnf
