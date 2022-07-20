@@ -609,7 +609,7 @@ Apache License, Version 2.0 (see LICENSE file)
 
 # Contact
 Email: Distributed-CI Team distributed-ci@redhat.com  
-Email: avu@redhat.com for any issue related when using DCI to test/run inside a container
+Email: avu@redhat.com or yinwang@redhat.com for any issue related when using DCI to test/run inside a container
 
 
 
