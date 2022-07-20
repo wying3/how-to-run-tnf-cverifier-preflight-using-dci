@@ -412,7 +412,7 @@ Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --po
 Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
 ------------------------------------------------------------------------------------------------------------------------
 ```
-   - **Start DCI Container Runner to test Preflight Container Image**
+   - **Start DCI Container Runner to test Preflight Container Image with Submission**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
 Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cert.redhat.com:6443".
@@ -422,16 +422,18 @@ Already on project "dci" on server "https://api.nokiavf.hubcluster-1.lab.eng.cer
 ......
 ```
 ```bash
-TASK [Final step] **************************************************************
+TASK [Final step] ******************************************************************************************************************************************************
 ok: [jumphost] => {
-    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/0f81cc11-6e7c-47a9-9cf5-967c8572f1ec/jobStates"
+    "msg": "The job is now finished. Review the log at: https://www.distributed-ci.io/jobs/a9ed6107-4446-4d6f-8635-dfa2b2fa69d5/jobStates"
 }
 
-PLAY RECAP *********************************************************************
-jumphost                   : ok=118  changed=41   unreachable=0    failed=0    skipped=34   rescued=0    ignored=1   
+PLAY RECAP *******************************************************************************************************************************************************
+jumphost                   : ok=114  changed=36   unreachable=0    failed=0    skipped=32   rescued=0    ignored=1   
 ```
 ![Preflight-Ci-IO-Test-Results](img/DciPreflight-CI-Job-TestResult.png "DCI Preflight Container Image TestResults")
-  
+![Prefligh-Container-Submission](img/DciPreflight-Container-Submission.png "DCI Preflight Container Image Submission From connect.redhat.com")
+
+    
 ### Use DCI to Test Preflight with Operator Bundle Image  
 **Note:** On a connected environment, index_image parameter is MANDATORY!  
 
