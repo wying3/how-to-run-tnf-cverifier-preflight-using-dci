@@ -369,17 +369,17 @@ https://issues.redhat.com/browse/CILAB-685
 ```yaml
 ---
 dci_topic: OCP-4.9
-dci_name: TestPreflightFromDCIContainer
-dci_configuration: Run Preflight container image from DCI
-#do_preflight_tests: true #Operator Bundle Image Testing
+dci_name: DCI Preflight Mavenir DU
+dci_configuration: Run Preflight container image from DCI Submission
+#do_preflight_tests: true
 preflight_test_certified_image: true
-
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
-  - container_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
-  #- pyxis_container_identifier: "628b8f2819e6793741575daa"
+  #- container_image: "quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16e2d"
+  - container_image: "quay.io/mrhcert/5gdu@sha256:0dcdc3033eba164b49efae8394bf7a4d050149f6524b0475b82fd3151062515d"
+    pyxis_container_identifier: "628b8f2819e6793741575daa"
 
-#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
 **Note:** To skip image submission to catalog, see above in #'s for pyxis  
           If there are more than one container images to be tested, the add more '- container_image' under preflight_containers_to_certify
@@ -441,17 +441,17 @@ jumphost                   : ok=118  changed=41   unreachable=0    failed=0    s
 dci_topic: OCP-4.9
 dci_name: TestPreflight Operator Bundle Image Using DCI
 dci_configuration: Run Preflight Operator Bundle Image from DCI
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 do_preflight_tests: true
 #preflight_test_certified_image: true
-partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_operators_to_certify:
-  - bundle_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
-  #- index_image:  "optional"
-  # https://connect.redhat.com/projects/628b8f2819e6793741575daa/overview
-  #- pyxis_container_identifier: "628b8f2819e6793741575daa"
+  - bundle_image: "quay.io/opdev/simple-demo-operator-bundle:v0.0.6"
+    index_image: "quay.io/opdev/simple-demo-operator-catalog:v0.0.6"
+    # https://connect.redhat.com/projects/628b8f2819e6793741575daa/overview
+    pyxis_container_identifier: "628b8f2819e6793741575daa"
 
 # To generate it: connect.redhat.com -> Product certification -> Container API Keys -> Generate new key
-#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
   - **When Testing Preflight with Operator Bundle image**  
     The CNF operator image must be compiled as Bundle and reference indices to other images.
