@@ -231,8 +231,7 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=3.68 ms
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.329 ms       
 ```
-<br />
-
+  
 ## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual
 ### TNF Test Suite Manual
 - **Using Podman**
@@ -290,7 +289,6 @@ oc config current-context
 mvnr-du/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443/system:admin
 
 #Current-context is NOT avachart#
-
 #Get a list of contexts and search for CNF Namespace#
 oc config get-contexts |grep avachart
 CURRENT   NAME                                                                                 CLUSTER                                                 AUTHINFO                                                             NAMESPACE
@@ -364,8 +362,7 @@ samplechart_0_1_2_tgz
 **More Options from Preflight Main Site**  
 https://github.com/redhat-openshift-ecosystem/openshift-preflight
   
-    
-## Start DCI runner TNF, chart-verifier and preflight  
+## Start DCI runner TNF, Chart-Verifier and Preflight  
 
 **Note:** Using DCI to run preflight with container image is not supported and the function was removed During the test.  
 DCI Developer team had added the feature back to support DCI to run with Preflight on container image as described on this Jira  
@@ -415,7 +412,8 @@ dci-container-with-preflight
 ├── install.yml
 ├── kubeconfig
 ├── pyxis-apikey.txt
-├── settings-preflight.yml
+├── settings-preflight-container-image.yml
+├── settings-preflight-operator.yml
 ├── settings.yml
 ├── start-dci-container-runner.sh
 ```
