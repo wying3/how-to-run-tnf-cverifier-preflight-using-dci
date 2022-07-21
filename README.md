@@ -623,7 +623,7 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
 ### Force Re-install Ansible when face this Error
 - **Ansible Force Reinstall**
   - Ansible Error
-```log
+```yaml
 Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
 [WARNING]: Skipping plugin (/usr/share/dci/callback/dci.py) as it seems to be invalid: No module named 'dciauth'
 ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
@@ -633,7 +633,7 @@ ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
 + pip3 install --force-reinstall ansible
 ```
 - **Downloading Metadata for Repository Error**
-```log
+```yaml
 Errors during downloading metadata for repository 'rhel-8-for-x86_64-appstream-rpms': 
 - Curl error (58): Problem with the local SSL certificate for https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os/repodata/repomd.xml [could not load PEM client certificate, OpenSSL error error
 ```
@@ -644,10 +644,10 @@ sudo rm -r /var/cache/dnf
 ```
 **Note:** For DCI Container Dockerfile, it takes care automatically.
 
-- **Enable no_log for Debugging**
-  - When some testing type got no details of the error ex. Preflight, then this TIP is useful.
+### Comment Out no_log for Debugging When Test the Preflight
+- **When Test Preflight with issue occurr, there is no details log**
   - Error:
-```log
+```yaml
 ERROR: fatal: [jumphost]: FAILED! => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result"}
 ```
 - **Enable no_log from Ansible Test Preflight Check Container**
