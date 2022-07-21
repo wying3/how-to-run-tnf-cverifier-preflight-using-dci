@@ -25,7 +25,7 @@ Table of Contents
 * [License](#license)
 * [Contact](#contact)
   
-# How To Run TNF Cert, Chart-Verifier, Preflight using DCI
+# Run TNF, Chart-Verifier and Preflight Using DCI
 ## Purpose of this Repository
 
 The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following tests:
@@ -131,7 +131,7 @@ resources:
 + oc create namespace dci
 + oc add-scc-to-user privileged system:serviceaccount:dci:dci-container-sa
 ```
-### Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node
+### Label the SNO or master/worker nodes for DCI Container to Run On
 ```diff
 + oc get no -o NAME | cut -d/ -f2|xargs -I V oc label node V dci=container
 ```
@@ -604,7 +604,54 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/cnf-cert  
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
-    
+ 
+# Tips And Troubleshooting 
+## Tips
+### Upgrade DCI Repo
+- **Traditional Method (Non-DCI Container)
+```diff
++ sudo dnf upgrade --refresh --repo dci --skip-broken --nobest
+```
+- **DCI Container**
+  - Just need to re-build Dockerfile, then new DCI Repo will be upgraded
+  
+### Force Re-install Ansible when face this Error
+- **Ansible Force Reinstall**
+  - Ansible Error
+```log
+Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+[WARNING]: Skipping plugin (/usr/share/dci/callback/dci.py) as it seems to be invalid: No module named 'dciauth'
+ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
+```
+  - Work Around
+```diff
++ pip3 install --force-reinstall ansible
+```
+- **Downloading Metadata for Repository**
+```log
+Errors during downloading metadata for repository 'rhel-8-for-x86_64-appstream-rpms': 
+- Curl error (58): Problem with the local SSL certificate for https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os/repodata/repomd.xml [could not load PEM client certificate, OpenSSL error error
+```
+  - Solution
+```diff
+sudo dnf clean all
+sudo rm -r /var/cache/dnf
+```
+**Note:** For DCI Container Dockerfile, it takes care automatically.
+
+- **Enable no_log for Debugging**
+  - When some testing type got no details of the error ex. Preflight, then this TIP is useful.
+  - Error:
+```log
+ERROR: fatal: [jumphost]: FAILED! => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result"}
+```
+  - Enable no_log from Ansible test_preflight_check_container_binary.yml
+```diff
++ Edit /usr/share/dci-openshift-app-agent/roles/preflight/tasks/test_preflight_check_container_binary.yml
++ no_log: true ---> #no_log: true
++ https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/tasks/test_preflight_check_container_binary.yml#L24
+```
+
 # License
 Apache License, Version 2.0 (see LICENSE file)
 
