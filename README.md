@@ -27,9 +27,11 @@ Table of Contents
    * [Tips](#tips)
       * [Upgrade DCI Repo](#upgrade-dci-repo)
       * [Force Re-install Ansible when face this Error](#force-re-install-ansible-when-face-this-error)
+      * [Comment Out no_log for Debugging When Test the Preflight](#comment-out-no_log-for-debugging-when-test-the-preflight)
 * [License](#license)
 * [Contact](#contact)
-  
+
+
 # Run TNF, Chart-Verifier and Preflight Using DCI
 ## Purpose of this Repository
 
@@ -643,8 +645,9 @@ sudo dnf clean all
 sudo rm -r /var/cache/dnf
 ```
 **Note:** For DCI Container Dockerfile, it takes care automatically.
+  
+### Comment Out no_log for Debugging When Test the Preflight  
 
-### Comment Out no_log for Debugging When Test the Preflight
 - **When Test Preflight with issue occurr, there is no details log**
   - Error:
 ```yaml
