@@ -17,7 +17,7 @@ Table of Contents
       * [TNF Test Suite Manual](#tnf-test-suite-manual)
       * [Chart-verifier Manual](#chart-verifier-manual)
       * [Preflight Manual](#preflight-manual)
-   * [Start DCI runner TNF, chart-verifier and preflight](#start-dci-runner-tnf-chart-verifier-and-preflight)
+   * [Start DCI runner TNF, Chart-Verifier and Preflight](#start-dci-runner-tnf-chart-verifier-and-preflight)
       * [Shellscript start-dci-container-runner.sh usage](#shellscript-start-dci-container-runnersh-usage)
       * [Use DCI to Test Preflight with container image](#use-dci-to-test-preflight-with-container-image)
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
