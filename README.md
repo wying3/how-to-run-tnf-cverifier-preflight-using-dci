@@ -632,7 +632,7 @@ ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
 ```diff
 + pip3 install --force-reinstall ansible
 ```
-- **Downloading Metadata for Repository**
+- **Downloading Metadata for Repository Error**
 ```log
 Errors during downloading metadata for repository 'rhel-8-for-x86_64-appstream-rpms': 
 - Curl error (58): Problem with the local SSL certificate for https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os/repodata/repomd.xml [could not load PEM client certificate, OpenSSL error error
@@ -650,7 +650,7 @@ sudo rm -r /var/cache/dnf
 ```log
 ERROR: fatal: [jumphost]: FAILED! => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result"}
 ```
-  - Enable no_log from Ansible test_preflight_check_container_binary.yml
+- **Enable no_log from Ansible Test Preflight Check Container**
 ```diff
 + Edit /usr/share/dci-openshift-app-agent/roles/preflight/tasks/test_preflight_check_container_binary.yml
 + no_log: true ---> #no_log: true
