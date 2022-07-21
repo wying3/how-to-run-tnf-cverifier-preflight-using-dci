@@ -17,7 +17,7 @@ Table of Contents
       * [TNF Test Suite Manual](#tnf-test-suite-manual)
       * [Chart-verifier Manual](#chart-verifier-manual)
       * [Preflight Manual](#preflight-manual)
-   * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
+   * [Start DCI runner TNF, chart-verifier and preflight](#start-dci-runner-tnf-chart-verifier-and-preflight)
       * [Use DCI to Test Preflight with container image](#use-dci-to-test-preflight-with-container-image)
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
@@ -178,7 +178,7 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
-### Files are required are inside DCI Container after it populated automatic from start-dci-container-runner.sh
+### DCI Container files structure are same as normal method
 ```bash
 /etc/dci-openshift-app-agent
  ── dcirc.sh ---> contents of https://www.distributed-ci.io/remotecis
@@ -356,14 +356,28 @@ samplechart_0_1_2_tgz
 ```
 **More Options from Preflight Main Site**  
 https://github.com/redhat-openshift-ecosystem/openshift-preflight
-
-
-## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
+  
+    
+## Start DCI runner TNF, chart-verifier and preflight  
 
 **Note:** Using DCI to run preflight with container image is not supported and the function was removed During the test.  
 DCI Developer team had added the feature back to support DCI to run with Preflight on container image as described on this Jira  
 https://issues.redhat.com/browse/CILAB-685  
 
+###  Shellscript start-dci-container-runner.sh usage
+```bash
+./start-dci-container-runner.sh
+------------------------------------------------------------------------------------------------------------------------
+Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
+Usage: bash ./start-dci-container-runner.sh [-h | --help]
+
+Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
+          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
+
+Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+------------------------------------------------------------------------------------------------------------------------
+```
+  
 ### Use DCI to Test Preflight with container image
   - **Settings Contents for Preflight**
 ```yaml
@@ -381,7 +395,7 @@ preflight_containers_to_certify:
 
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
-**Note:** To skip image submission to catalog, see above in #'s for pyxis  
+**Note:** To skip image submission to catalog/connect.redhat.com, please comment out those pyxis parameters
           If there are more than one container images to be tested, the add more '- container_image' under preflight_containers_to_certify
 
   - **Files structure Of Preflight**
@@ -399,19 +413,6 @@ dci-container-with-preflight
 ├── start-dci-container-runner.sh
 ```
   
-   - **Shellscript start-dci-container-runner.sh usage**
-```bash
-./start-dci-container-runner.sh
-------------------------------------------------------------------------------------------------------------------------
-Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
-Usage: bash ./start-dci-container-runner.sh [-h | --help]
-
-Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
-          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
-
-Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
-------------------------------------------------------------------------------------------------------------------------
-```
    - **Start DCI Container Runner to test Preflight Container Image with Submission**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
