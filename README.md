@@ -44,7 +44,9 @@ Additional, this respository will aim to show how to use DCI to test above 3 mai
   
 In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.  
 
-**Note:** dci-runner.sh is from David, it will collect all components version and then added as dci_tags and show on the DCI CI Web Gui.  
+**Note:** dci-runner.sh is made by David Rabkin, it is used to collect all components version info as dci_tags and push back to DCI control server, along with other test results and logs and displayed under the DCI job WEB GUI.
+
+The source code can be found in here: https://github.com/dci-labs/nokia-cmm-tnf-config/blob/main/dci-runner.sh
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
