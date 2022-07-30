@@ -35,12 +35,14 @@ Table of Contents
 # Run TNF, Chart-Verifier and Preflight Using DCI
 ## Purpose of this Repository
 
-The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following tests:
+The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following certification tools:
 - [x] TNF Test Suite Certification
 - [x] Helm Chart-verifier
 - [x] Preflight to scan the image for CVE and security checking  
 
-Additional, this respository will aim to show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 tests inside a Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
+The main benefit is to use DCI as centralize interface for partner to run all certification tests and push all test log/results, capture CNF and OCP platform info back to DCI control server that leverage the powerful CI feature of DCI and simplify certification test for partner, 
+
+Additional, this respository will aim to show how to use DCI to run above 3 main certification tool not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 testing inside a Kubernetes Container, this way you dont need to install DCI, preflight and helm chart requirements RPMs or libraries. this will simplify test procedure, easy to customize parameters for each partner and easier troubleshooting for tool issues.  
   
 In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.  
 
