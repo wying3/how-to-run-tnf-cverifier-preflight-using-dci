@@ -375,15 +375,20 @@ https://issues.redhat.com/browse/CILAB-685
 ###  Shellscript start-dci-container-runner.sh usage
 ```bash
 ./start-dci-container-runner.sh
-------------------------------------------------------------------------------------------------------------------------
-Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
-Usage: bash ./start-dci-container-runner.sh [-h | --help]
+    ------------------------------------------------------------------------------------------------------------------------
+    Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <dci_ns> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <dci_container> -sk|--skip-copy <yes|no> -sf|--setting <filename.yml>
+    Usage: bash ./start-dci-container-runner.sh [-h | --help]
 
-Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
-          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
+    Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --settings-tnf.yml --skip-copy yes/no
+              bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx --settings-tnf.yml
 
-Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
-------------------------------------------------------------------------------------------------------------------------
+    --setting     --- if not specified settings-xx.yml, it will use default settings.yml, otherwise it will rename to settings.yml.
+    --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+    --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
+    --namespace   --- Namespace of the dci container POD
+    --podname     --- Pod name where dci openshift agent is installed
+    --help        --- Usage of the ./start-dci-container-runner.sh
+    ------------------------------------------------------------------------------------------------------------------------
 ```
   
 ### Use DCI to Test Preflight with container image
@@ -391,14 +396,13 @@ Note: --skip-copy   --- default is no, it always needs to copy those requirement
 ```yaml
 ---
 dci_topic: OCP-4.9
-dci_name: DCI Preflight Mavenir DU
-dci_configuration: Run Preflight container image from DCI Submission
+dci_name: TestPreflightFromDCIContainer
+dci_configuration: Run Preflight container image from DCI
 #do_preflight_tests: true
 preflight_test_certified_image: true
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
-  #- container_image: "quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16e2d"
-  - container_image: "quay.io/mrhcert/5gdu@sha256:0dcdc3033eba164b49efae8394bf7a4d050149f6524b0475b82fd3151062515d"
+  - container_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
     pyxis_container_identifier: "628b8f2819e6793741575daa"
 
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
@@ -460,10 +464,10 @@ preflight_operators_to_certify:
   - bundle_image: "quay.io/opdev/simple-demo-operator-bundle:v0.0.6"
     index_image: "quay.io/opdev/simple-demo-operator-catalog:v0.0.6"
     # https://connect.redhat.com/projects/628b8f2819e6793741575daa/overview
-    pyxis_container_identifier: "628b8f2819e6793741575daa"
+    #pyxis_container_identifier: "628b8f2819e6793741575daa"
 
 # To generate it: connect.redhat.com -> Product certification -> Container API Keys -> Generate new key
-pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+#pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
   - **When Testing Preflight with Operator Bundle image**  
     The CNF operator image must be compiled as Bundle and reference indices to other images.
@@ -511,14 +515,23 @@ dci_disconnected: false
 - **Helm Config for Chart-Verifier**  
 ```yaml
 helm_config.yaml:
-partner_name: telcoci CMM
-partner_email: telco.cmm@nokia.com
+---
+dci_topic: OCP-4.9
+dci_name: TestDCIWithChart-Verifier SampleChart
+dci_configuration: DCI Chart-verifier SampleChart
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+do_chart_verifier: true
+dci_openshift_app_ns: avachart
+dci_teardown_on_success: false
+dci_disconnected: false
+partner_name: telcoci SampleChart
+partner_email: telco.sample@redhat.com
 github_token_path: "/opt/cache/token.txt"
 dci_charts:
   -
     name: sameplechart2
     chart_file: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/samplechart-0.1.3.tgz
-    #chart_values: https://github.com/ansvu/samplechart2/blob/main/samplechart/values.yaml
+    #chart_values: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/values.yaml
     #install: true
     deploy_chart: true
     create_pr: false
@@ -561,27 +574,29 @@ jumphost                   : ok=113  changed=37   unreachable=0    failed=0    s
 ```yaml
 ---
 dci_topic: OCP-4.9
-dci_name: Test TNF v4.0.1 Using DCI
-dci_configuration: Test TNF Certs Using DCI inside a container
+dci_name: Test TNF v4.0.2 Using DCI MVNR 5GDU
+dci_configuration: Test TNF Certs Using DCI inside a container Mavenir 5gdu
 do_cnf_cert: true
 dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
 tnf_suites: >-
+  lifecycle
   access-control
   networking
   observability
   platform-alteration
+  affiliated-certification
 tnf_postrun_delete_resources: false
-dci_openshift_app_ns: dci-tnf-test
+dci_openshift_app_ns: mvnr-du
 dci_teardown_on_success: false
 tnf_log_level: trace
 dci_disconnected: false
 tnf_config:
-  - namespace: dci-tnf-test
+  - namespace: mvnr-du
     targetpodlabels:
-      - app=dci-tnf-test
+      - app=du
     operators_regexp:
     exclude_connectivity_regexp:
-test_network_function_version: v4.0.1
+test_network_function_version: v4.0.2
 ```
   - **Files structure of Chart-Verifier**
 ```bash
