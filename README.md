@@ -96,7 +96,7 @@ global:
 image:
   dcipreflight:
     imgname: dci-container-tpc
-    tag: v1
+    tag: v3
     pullPolicy: IfNotPresent
 
 nameOverride: ""
