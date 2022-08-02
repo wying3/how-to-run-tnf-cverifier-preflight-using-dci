@@ -1,0 +1,20 @@
+---
+dci_topic: OCP-4.9
+dci_name: TestDCIWithChart-Verifier Mavenir 5G DU
+dci_configuration: DCI Chart-verifier Mavenir 5gdu test
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+do_chart_verifier: true
+dci_openshift_app_ns: mvnr-du
+dci_teardown_on_success: false
+dci_disconnected: false
+partner_name: telcoci Mavenir
+partner_email: telco.5gdu@mavenir.com
+github_token_path: "/opt/cache/token.txt"
+dci_charts:
+  -
+    name: mavenir-5gu-test
+    chart_file: https://ansvu.github.io/du_test/du-2.9.tgz
+    #chart_values: https://github.com/ansvu/du_test/blob/6560ea94f22da35b33230b869c7d25dc7a9b2ea4/values-ying.yaml    
+    #install: true
+    deploy_chart: true
+    create_pr: false

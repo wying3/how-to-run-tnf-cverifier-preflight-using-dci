@@ -2,7 +2,7 @@ annotations:
   charts.openshift.io/archs: x86_64
   charts.openshift.io/name: RedHat DCI Openshift APP Agent Container
   charts.openshift.io/provider: RedHat
-  charts.openshift.io/supportURL: https://github.com/ansvu/dci-container
+  charts.openshift.io/supportURL: https://github.com/ansvu/how-to-run-tnf-chartverifier-preflight-using-dci
 apiVersion: v2
 name: dci-container
 description: A Helm chart for DCI OpenShift App Agent on a Container

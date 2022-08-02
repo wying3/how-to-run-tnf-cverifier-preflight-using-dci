@@ -1,12 +1,12 @@
 ARG OPENSHIFT_CLIENT_VERSION=4.9.25
 FROM registry.access.redhat.com/ubi8/ubi:8.4-213
-LABEL name="DCI CNF, Preflight and ChartVerifier" \
-      maintainer="cmmman.scm@redhat.com" \
+LABEL name="DCI runs TNF, Preflight and ChartVerifier" \
+      maintainer="dcicontainer.scm@redhat.com" \
       vendor="Red Hat, Inc." \
       version="1" \
       release="" \
-      summary="CMM application Pods" \
-      description="DCI and Preflight runs certification checks against containers and Operators."
+      summary="Use DCI to run preflight, chart-verifier and tnf" \
+      description="Use DCI to run Preflight, Chart-Verifier and TNF Test Suite inside a container"
 
 RUN mkdir -p /licenses
 COPY License.txt /licenses/License.txt
@@ -23,7 +23,7 @@ RUN dnf -y install dci-openshift-app-agent
 RUN dnf -y install net-tools ; dnf -y install wget; dnf -y install procps;
 
 RUN rm -rf /var/log/*
-RUN dnf -y update; yum -y reinstall shadow-utils; yum -y install crun; yum -y install iputils iproute bzip2 iptables; yum -y install net-tools; \
+RUN dnf -y update; yum -y reinstall shadow-utils; yum -y install crun; yum -y install iputils iproute bzip2 iptables; yum -y install net-tools; yum -y install openscap-utils; \
 yum -y install podman fuse-overlayfs --exclude container-selinux; \
 rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 

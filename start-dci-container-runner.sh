@@ -2,18 +2,20 @@
 
 print_help() {
     echo "
-         ------------------------------------------------------------------------------------------------------------------------
-         Usage: bash $0  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
-         Usage: bash $0 [-h | --help]
-         Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
-                   bash $0 --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
-         
-         --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
-         --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
-         --namespace   --- Namespace of the dci container POD
-         --podname     --- Pod name where dci openshift agent is installed
-         --help        --- Usage of the $0
-         ------------------------------------------------------------------------------------------------------------------------"
+    ------------------------------------------------------------------------------------------------------------------------
+    Usage: bash $0  -ns|--namespace <dci_ns> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <dci_container> -sk|--skip-copy <yes|no> -sf|--setting <filename.yml>
+    Usage: bash $0 [-h | --help]
+
+    Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --settings-tnf.yml --skip-copy yes/no
+              bash $0 --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx --settings-tnf.yml
+
+    --setting     --- if not specified settings-xx.yml, it will use default settings.yml, otherwise it will rename to settings.yml.
+    --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+    --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
+    --namespace   --- Namespace of the dci container POD
+    --podname     --- Pod name where dci openshift agent is installed
+    --help        --- Usage of the $0
+    ------------------------------------------------------------------------------------------------------------------------"
     exit 0
 }
 
@@ -40,6 +42,13 @@ for i in "$@"; do
             continue
         fi
         ;;
+    -sf | --setting)
+        if [ -n "$2" ]; then
+            SETTING="$2"
+            shift 2
+            continue
+        fi
+        ;;	
     -sk | --skip-copy)
         if [ -n "$2" ]; then
             SKIP_COPY="$2"
@@ -61,6 +70,12 @@ TEST_TYPE="${TEST_TYPE^^}"
 if [[ $TEST_TYPE == "" || ${TEST_TYPE} != +(PREFLIGHT|CHART|TNF) || $POD_NAME == "" || $NAMESPACE == "" ]]; then
     print_help
     exit 0
+fi
+
+if [[ $SETTING == "" ]]; then
+      SETTING="settings.yml"
+else
+      cp -f $SETTING settings.yml
 fi
 
 currpath=$(pwd)
@@ -159,8 +174,8 @@ if [[ "$TEST_TYPE" == +(TNF|PREFLIGHT) ]]; then
 fi
 
 # Clear the dnf cache for Repo Download Issue(Not Fatal) when run dci-runner.sh
-oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo rm -rf /var/cache/dnf'
+oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo dnf clean all;sudo rm -rf /var/cache/dnf'
 
 # Start run dci-agent test remotely from your laptop/other nodes
-logmsg "Start DCI Container Runner for ${TEST_TYPE} Test-Type..."
+logmsg "Start DCI Container Runner for ${TEST_TYPE} Testing..."
 oc -n $NAMESPACE exec -it ${POD_NAME} -- bash -c 'su - dci-openshift-app-agent -c "export KUBECONFIG=/var/lib/dci-openshift-app-agent/kubeconfig; bash /var/lib/dci-openshift-app-agent/dci-runner.sh"'

@@ -1,23 +1,25 @@
 ---
 dci_topic: OCP-4.9
-dci_name: Test TNF v4.0.1 Using DCI
-dci_configuration: Test TNF Certs Using DCI inside a container
+dci_name: Test TNF v4.0.1 Using DCI MVNR 5GDU
+dci_configuration: Test TNF Certs Using DCI inside a container Mavenir 5gdu
 do_cnf_cert: true
 dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
 tnf_suites: >-
+  lifecycle
   access-control
   networking
   observability
   platform-alteration
+  affiliated-certification
 tnf_postrun_delete_resources: false
-dci_openshift_app_ns: dci-tnf-test
+dci_openshift_app_ns: mvnr-du
 dci_teardown_on_success: false
 tnf_log_level: trace
 dci_disconnected: false
 tnf_config:
-  - namespace: dci-tnf-test
+  - namespace: mvnr-du
     targetpodlabels:
-      - app=dci-tnf-test
+      - app=du
     operators_regexp:
     exclude_connectivity_regexp:
-test_network_function_version: v4.0.1	
+test_network_function_version: v4.0.2

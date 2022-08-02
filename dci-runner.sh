@@ -5,7 +5,7 @@
 # Global variables could be used in functions.
 CNF=cmm
 MAN='Usage: dci-runner.sh.'
-VER=0.9.20220419
+VER=0.9.20220626-nokia
 
 # Prints all parameters to stdout, prepends with a timestamp.
 log() {
@@ -62,9 +62,15 @@ file_exists() {
 # Composes Ansible parameters for Helm Charts tests.
 helm_charts_param() {
 	local cfg
-	cfg="$(dirname "$(realpath "$0")")/helm-charts-${CNF}.yml"
+	cfg="$(dirname "$(realpath "$0")")/helm-charts-$CNF.yml"
 	file_exists "$cfg" || return 0
-	printf -- "-e kubeconfig_path=%s -e do_chart_verifier=true -e @%s" "$KUBECONFIG" "$cfg"
+	printf -- " \
+--extra-vars \"kubeconfig_path\"=\"%s\" \
+--extra-vars \"do_chart_verifier\"=\"true\" \
+--extra-vars \"@%s\"\
+" \
+		"$KUBECONFIG" \
+		"$cfg"
 }
 
 # Adds environment variables for DCI if a resource file exists.
@@ -146,17 +152,11 @@ TAGS="\
 \"$KUBE_VERSION\",\
 \"$RUNNER_VERSION\""
 
-REALPATH=$(dirname "$(realpath "$0")")
-create_dci_tags_json(){
-    RETAGS=$(printf "{\"dci_tags\":[%s]}" "$TAGS")
-    echo $RETAGS | jq > "${REALPATH}/dci_tags.json"
-}
-
-create_dci_tags_json
+# shellcheck disable=SC2046
 dci-openshift-app-agent-ctl \
 	--start \
 	--config "$CFG" \
 	-- \
-	--extra-vars "@${REALPATH}/dci_tags.json" \
-	$(helm_charts_param)
+	--extra-vars \{\"dci_tags\":["$TAGS"]\}$(helm_charts_param)
 log Bye.
+

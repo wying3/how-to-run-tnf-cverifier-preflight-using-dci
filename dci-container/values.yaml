@@ -16,7 +16,7 @@ global:
 image:
   dcipreflight:
     imgname: dci-container-tpc
-    tag: v4 #with Preflight,v3->without Preflight Binary
+    tag: v3 #with Preflight,v3->without Preflight Binary
     pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -32,7 +32,7 @@ dcinetipvlan:
   type: static
   cidr: 192.168.30.0/27
   allocationPoolStartIp: 192.168.30.20
-  allocationPoolEndIp: 192.168.30.20
+  allocationPoolEndIp: 192.168.30.21
   routes:
   - dst: 172.168.20.0/24
     gw: 192.168.30.1

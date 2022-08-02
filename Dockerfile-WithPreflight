@@ -22,14 +22,13 @@ ARG ARCH
 ARG OS
 
 FROM registry.access.redhat.com/ubi8/ubi:8.4-213
-LABEL name="DCI CNF, Preflight and ChartVerifier" \
-      maintainer="cmmman.scm@redhat.com" \
+LABEL name="DCI runs TNF, Preflight and ChartVerifier" \
+      maintainer="dcicontainer.scm@redhat.com" \
       vendor="Red Hat, Inc." \
       version="1" \
       release="" \
-      summary="CMM application Pods" \
-      description="DCI and Preflight runs certification checks against containers and Operators."
-
+      summary="Use DCI to run preflight, chart-verifier and tnf" \
+      description="Use DCI to run Preflight, Chart-Verifier and TNF Test Suite inside a container"
 
 # Define that tags should expire after 1 week. This should not apply to versioned releases.
 LABEL quay.expires-after=${quay_expiration}

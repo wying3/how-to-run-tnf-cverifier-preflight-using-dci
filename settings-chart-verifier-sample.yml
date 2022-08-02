@@ -1,0 +1,20 @@
+---
+dci_topic: OCP-4.9
+dci_name: TestDCIWithChart-Verifier SampleChart
+dci_configuration: DCI Chart-verifier SampleChart
+dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
+do_chart_verifier: true
+dci_openshift_app_ns: avachart
+dci_teardown_on_success: false
+dci_disconnected: false
+partner_name: telcoci SampleChart
+partner_email: telco.sample@redhat.com
+github_token_path: "/opt/cache/token.txt"
+dci_charts:
+  -
+    name: sameplechart2
+    chart_file: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/samplechart-0.1.3.tgz
+    #chart_values: https://github.com/ansvu/samplechart2/releases/download/samplechart-0.1.3/values.yaml
+    #install: true
+    deploy_chart: true
+    create_pr: false

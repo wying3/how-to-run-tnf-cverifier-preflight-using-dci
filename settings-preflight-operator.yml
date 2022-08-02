@@ -1,4 +1,3 @@
----
 dci_topic: OCP-4.9
 dci_name: TestPreflight Operator Bundle Image Using DCI
 dci_configuration: Run Preflight Operator Bundle Image from DCI
