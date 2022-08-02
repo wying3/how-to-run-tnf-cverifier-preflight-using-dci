@@ -1,7 +1,7 @@
 Table of Contents
 =================
 
-* [How To Run TNF Cert, Chart-Verifier, Preflight using DCI](#how-to-run-tnf-cert-chart-verifier-preflight-using-dci)
+* [Run TNF, Chart-Verifier and Preflight Using DCI](#run-tnf-chart-verifier-and-preflight-using-dci)
    * [Purpose of this Repository](#purpose-of-this-repository)
    * [Pre-requisites](#pre-requisites)
    * [Build DCI container image with dci's requirements and preflight binary inside the image](#build-dci-container-image-with-dcis-requirements-and-preflight-binary-inside-the-image)
@@ -9,35 +9,46 @@ Table of Contents
    * [Prepare and Deploy DCI Container using helm chart](#prepare-and-deploy-dci-container-using-helm-chart)
       * [Update helm chart values.yaml](#update-helm-chart-valuesyaml)
       * [Create Namespace and add SCC to SA user as priviledge](#create-namespace-and-add-scc-to-sa-user-as-priviledge)
-      * [Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node](#label-the-sno-or-masterworker-nodes-if-nodeselector-is-enabled-to-allocate-this-dci-container-pod-to-specific-node)
+      * [Label the SNO or master/worker nodes for DCI Container to Run On](#label-the-sno-or-masterworker-nodes-for-dci-container-to-run-on)
       * [Deploy DCI Container using helmchart](#deploy-dci-container-using-helmchart)
-      * [Files are required are inside DCI Container after it populated automatic from start-dci-container-runner.sh](#files-are-required-are-inside-dci-container-after-it-populated-automatic-from-start-dci-container-runnersh)
+      * [DCI Container files structure are same as normal method](#dci-container-files-structure-are-same-as-normal-method)
       * [Scale out additional DCI Container for more users](#scale-out-additional-dci-container-for-more-users)
    * [Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual](#run-tnf-test-suite-helm-chart-verifier-and-preflight-manual)
       * [TNF Test Suite Manual](#tnf-test-suite-manual)
       * [Chart-verifier Manual](#chart-verifier-manual)
       * [Preflight Manual](#preflight-manual)
-   * [Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images](#start-using-dci-to-run-tnf-test-suite-chart-verifier-and-preflight-to-scan-operator-or-container-images)
+   * [Start DCI runner TNF, Chart-Verifier and Preflight](#start-dci-runner-tnf-chart-verifier-and-preflight)
+      * [Shellscript start-dci-container-runner.sh usage](#shellscript-start-dci-container-runnersh-usage)
       * [Use DCI to Test Preflight with container image](#use-dci-to-test-preflight-with-container-image)
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
+* [Tips And Troubleshooting](#tips-and-troubleshooting)
+   * [Tips](#tips)
+      * [Upgrade DCI Repo](#upgrade-dci-repo)
+      * [Force Re-install Ansible when face this Error](#force-re-install-ansible-when-face-this-error)
+      * [Comment Out no_log for Debugging When Test the Preflight](#comment-out-no_log-for-debugging-when-test-the-preflight)
 * [License](#license)
 * [Contact](#contact)
-  
-# How To Run TNF Cert, Chart-Verifier, Preflight using DCI
+
+
+# Run TNF, Chart-Verifier and Preflight Using DCI
 ## Purpose of this Repository
 
-The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following tests:
+The main purpose of this repository is solely to show how to use DCI as centralize tool to run the following certification tools:
 - [x] TNF Test Suite Certification
 - [x] Helm Chart-verifier
 - [x] Preflight to scan the image for CVE and security checking  
 
-Additional, this respository will aim to show how to use DCI to test above 3 main catagories not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 tests inside a Kubernetes Container, where you dont need to install DCI, preflight and helm chart requirements RPMs or libraries.
+The main benefit is to use DCI as centralize interface for partner to run all certification tests and push all test log/results, capture CNF and OCP platform info back to DCI control server that leverage the powerful CI feature of DCI and simplify certification test for partner, 
+
+Additional, this respository will aim to show how to use DCI to run above 3 main certification tool not just on traditional helper node or VM but also to do the demostration how to use DCI to run these 3 testing inside a Kubernetes Container, this way you dont need to install DCI, preflight and helm chart requirements RPMs or libraries. this will simplify test procedure, easy to customize parameters for each partner and easier troubleshooting for tool issues.  
   
 In matter of facts, it has an extra benefits, for example, the user can also a perform a scale out additional PODs in seconds to run DCI testing for different application on same or different clusters. Finally, this repository is also given the original manual methods of how to run these 3 tests without using DCI tool for references/troubleshooting purpose.  
 
-**Note:** dci-runner.sh is from David, it will collect all components version and then added as dci_tags and show on the DCI CI Web Gui.  
+**Note:** dci-runner.sh is made by David Rabkin, it is used to collect all components version info as dci_tags and push back to DCI control server, along with other test results and logs and displayed under the DCI job WEB GUI.
+
+The source code can be found in here: https://github.com/dci-labs/nokia-cmm-tnf-config/blob/main/dci-runner.sh
 
 ## Pre-requisites
 - One OAM subnet for secondary POD interface to reach https://www.distributed-ci.io as using for results/logs submission
@@ -131,7 +142,7 @@ resources:
 + oc create namespace dci
 + oc add-scc-to-user privileged system:serviceaccount:dci:dci-container-sa
 ```
-### Label the SNO or master/worker nodes if nodeSelector is enabled to allocate this dci-container POD to specific node
+### Label the SNO or master/worker nodes for DCI Container to Run On
 ```diff
 + oc get no -o NAME | cut -d/ -f2|xargs -I V oc label node V dci=container
 ```
@@ -178,7 +189,7 @@ PING 192.168.30.1 (192.168.30.1) 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.393 ms
 64 bytes from 192.168.30.1: icmp_seq=3 ttl=64 time=0.365 ms
 ```
-### Files are required are inside DCI Container after it populated automatic from start-dci-container-runner.sh
+### DCI Container files structure are same as normal method
 ```bash
 /etc/dci-openshift-app-agent
  ── dcirc.sh ---> contents of https://www.distributed-ci.io/remotecis
@@ -224,8 +235,7 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 64 bytes from 192.168.30.1: icmp_seq=1 ttl=64 time=3.68 ms
 64 bytes from 192.168.30.1: icmp_seq=2 ttl=64 time=0.329 ms       
 ```
-<br />
-
+  
 ## Run TNF Test Suite, Helm Chart-Verifier and Preflight Manual
 ### TNF Test Suite Manual
 - **Using Podman**
@@ -283,7 +293,6 @@ oc config current-context
 mvnr-du/api-nokiavf-hubcluster-1-lab-eng-cert-redhat-com:6443/system:admin
 
 #Current-context is NOT avachart#
-
 #Get a list of contexts and search for CNF Namespace#
 oc config get-contexts |grep avachart
 CURRENT   NAME                                                                                 CLUSTER                                                 AUTHINFO                                                             NAMESPACE
@@ -356,14 +365,27 @@ samplechart_0_1_2_tgz
 ```
 **More Options from Preflight Main Site**  
 https://github.com/redhat-openshift-ecosystem/openshift-preflight
-
-
-## Start Using DCI to run TNF Test Suite, chart-verifier and preflight to scan Operator or Container images  
+  
+## Start DCI runner TNF, Chart-Verifier and Preflight  
 
 **Note:** Using DCI to run preflight with container image is not supported and the function was removed During the test.  
 DCI Developer team had added the feature back to support DCI to run with Preflight on container image as described on this Jira  
 https://issues.redhat.com/browse/CILAB-685  
 
+###  Shellscript start-dci-container-runner.sh usage
+```bash
+./start-dci-container-runner.sh
+------------------------------------------------------------------------------------------------------------------------
+Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
+Usage: bash ./start-dci-container-runner.sh [-h | --help]
+
+Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
+          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
+
+Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
+------------------------------------------------------------------------------------------------------------------------
+```
+  
 ### Use DCI to Test Preflight with container image
   - **Settings Contents for Preflight**
 ```yaml
@@ -381,7 +403,7 @@ preflight_containers_to_certify:
 
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
-**Note:** To skip image submission to catalog, see above in #'s for pyxis  
+**Note:** To skip image submission to catalog/connect.redhat.com, please comment out those pyxis parameters
           If there are more than one container images to be tested, the add more '- container_image' under preflight_containers_to_certify
 
   - **Files structure Of Preflight**
@@ -394,24 +416,12 @@ dci-container-with-preflight
 ├── install.yml
 ├── kubeconfig
 ├── pyxis-apikey.txt
-├── settings-preflight.yml
+├── settings-preflight-container-image.yml
+├── settings-preflight-operator.yml
 ├── settings.yml
 ├── start-dci-container-runner.sh
 ```
   
-   - **Shellscript start-dci-container-runner.sh usage**
-```bash
-./start-dci-container-runner.sh
-------------------------------------------------------------------------------------------------------------------------
-Usage: bash ./start-dci-container-runner.sh  -ns|--namespace <NS_Of_Dci_Container> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname    <Name_Of_DCI_Container_POD> -sk|--skip-copy <yes|no>
-Usage: bash ./start-dci-container-runner.sh [-h | --help]
-
-Usage ex: bash ./start-dci-container-runner.sh --namespace dci --type CHART --podname dci-dci-container-xxxxx --skip-copy no
-          bash ./start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx
-
-Note: --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
-------------------------------------------------------------------------------------------------------------------------
-```
    - **Start DCI Container Runner to test Preflight Container Image with Submission**
 ```diff
 + bash start-dci-container-runner.sh --namespace dci --type PREFLIGHT --podname dci-dci-container-7b9669f68d-pxwf4
@@ -603,13 +613,61 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/cnf-cert  
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
-    
+ 
+# Tips And Troubleshooting 
+## Tips
+### Upgrade DCI Repo
+- **Traditional Method (Non-DCI Container)
+```diff
++ sudo dnf upgrade --refresh --repo dci --skip-broken --nobest
+```
+- **DCI Container**
+  - Just need to re-build Dockerfile, then new DCI Repo will be upgraded
+  
+### Force Re-install Ansible when face this Error
+- **Ansible Force Reinstall**
+  - Ansible Error
+```yaml
+Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+[WARNING]: Skipping plugin (/usr/share/dci/callback/dci.py) as it seems to be invalid: No module named 'dciauth'
+ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
+```
+  - Work Around
+```diff
++ pip3 install --force-reinstall ansible
+```
+- **Downloading Metadata for Repository Error**
+```yaml
+Errors during downloading metadata for repository 'rhel-8-for-x86_64-appstream-rpms': 
+- Curl error (58): Problem with the local SSL certificate for https://cdn.redhat.com/content/dist/rhel8/8/x86_64/appstream/os/repodata/repomd.xml [could not load PEM client certificate, OpenSSL error error
+```
+  - Solution
+```diff
+sudo dnf clean all
+sudo rm -r /var/cache/dnf
+```
+**Note:** For DCI Container Dockerfile, it takes care automatically.
+  
+### Comment Out no_log for Debugging When Test the Preflight  
+
+- **When Test Preflight with issue occurr, there is no details log**
+  - Error:
+```yaml
+ERROR: fatal: [jumphost]: FAILED! => {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result"}
+```
+- **Enable no_log from Ansible Test Preflight Check Container**
+```diff
++ Edit /usr/share/dci-openshift-app-agent/roles/preflight/tasks/test_preflight_check_container_binary.yml
++ no_log: true ---> #no_log: true
++ https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/tasks/test_preflight_check_container_binary.yml#L24
+```
+
 # License
 Apache License, Version 2.0 (see LICENSE file)
 
 # Contact
 Email: Distributed-CI Team distributed-ci@redhat.com  
-Email: avu@redhat.com for any issue related when using DCI to test/run inside a container
+Email: avu@redhat.com or yinwang@redhat.com for any issue related when using DCI to test/run inside a container
 
 
 
