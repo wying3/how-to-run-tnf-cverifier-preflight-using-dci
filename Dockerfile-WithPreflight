@@ -66,7 +66,7 @@ RUN dnf -y install dci-openshift-app-agent
 RUN dnf -y install net-tools ; dnf -y install wget; dnf -y install procps;
 
 RUN rm -rf /var/log/*
-RUN dnf -y update; yum -y reinstall shadow-utils; yum -y install crun; yum -y install iputils iproute bzip2 iptables; yum -y install net-tools; \
+RUN dnf -y update; yum -y reinstall shadow-utils; yum -y install crun; yum -y install iputils iproute bzip2 iptables; yum -y install net-tools; yum -y install openscap-utils; \
 yum -y install podman fuse-overlayfs --exclude container-selinux; \
 rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
