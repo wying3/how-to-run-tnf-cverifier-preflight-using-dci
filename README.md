@@ -108,6 +108,15 @@ hook_delete_policy: "hook-failed"
 serviceAccount:
   name: "dci-container-sa"
 
+KubeConf:                                                                                                                                                                                        
+  kubeconfig: "/var/lib/dci-openshift-app-agent/kubeconfig" #must copy kubeconfig to this path from start-dci-container-runner.sh                                                                
+                                                                                                                                                                                                 
+Proxy:                                                                                                                                                                                           
+  enabled: false                                                                                                                                                                                 
+  http_proxy: "http://135.245.48.34:8000"                                                                                                                                                        
+  https_proxy: "http://135.245.48.34:8000"                                                                                                                                                       
+  no_proxy: "135.111.247.0/24,npvlab.com"                                                                                                                                                        
+
 dcinetipvlan:
   name: ipvlan
   hostDevice: eno6
@@ -122,7 +131,7 @@ dcinetipvlan:
 securityContext:
   privileged: true
   capabilities:
-    add: ["NET_ADMIN","NET_RAW","SYS_ADMIN"]        
+    #add: ["NET_ADMIN","NET_RAW","SYS_ADMIN"]        
 
 resources:
   limits:
@@ -142,7 +151,7 @@ resources:
 ### Create Namespace and add SCC to SA user as priviledge
 ```diff
 + oc create namespace dci
-+ oc add-scc-to-user privileged system:serviceaccount:dci:dci-container-sa
++ oc adm policy add-scc-to-user privileged system:serviceaccount:dci:dci-container-sa
 ```
 ### Label the SNO or master/worker nodes for DCI Container to Run On
 ```diff
