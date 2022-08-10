@@ -25,7 +25,24 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.global.repository }}/{{ .Values.image.dcipreflight.imgname }}:{{ .Values.image.dcipreflight.tag }}
-          command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 3600 ; done"]
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - >-
+                echo "Setting DCI Proxy ENV and sleeping..."
+                i=0;
+                {{- if eq .Values.Proxy.enabled true }}
+                echo 'https_proxy={{ .Values.Proxy.https_proxy }}' >> /etc/environment;
+                echo 'http_proxy={{ .Values.Proxy.http_proxy }}' >> /etc/environment;
+                echo 'no_proxy={{ .Values.Proxy.no_proxy }}' >> /etc/environment;
+                {{- end }}
+                echo 'KUBECONFIG={{ .Values.KubeConf.kubeconfig }}' >> /etc/environment;                
+                while true; 
+                do 
+                  echo "$i: $(date)"; 
+                  i=$((i+1)); 
+                  sleep 3600; 
+                done
           imagePullPolicy: {{ .Values.image.dcipreflight.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

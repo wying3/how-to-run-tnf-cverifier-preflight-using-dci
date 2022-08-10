@@ -174,8 +174,8 @@ if [[ "$TEST_TYPE" == +(TNF|PREFLIGHT) ]]; then
 fi
 
 # Clear the dnf cache for Repo Download Issue(Not Fatal) when run dci-runner.sh
-oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo dnf clean all;sudo rm -rf /var/cache/dnf'
+oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo dnf clean all;sudo rm -rf /var/cache/dnf' >/dev/null 2>&1
 
 # Start run dci-agent test remotely from your laptop/other nodes
 logmsg "Start DCI Container Runner for ${TEST_TYPE} Testing..."
-oc -n $NAMESPACE exec -it ${POD_NAME} -- bash -c 'su - dci-openshift-app-agent -c "export KUBECONFIG=/var/lib/dci-openshift-app-agent/kubeconfig; bash /var/lib/dci-openshift-app-agent/dci-runner.sh"'
+oc -n $NAMESPACE exec -it ${POD_NAME} -- bash -c 'su - dci-openshift-app-agent -c "bash /var/lib/dci-openshift-app-agent/dci-runner.sh"'
