@@ -646,6 +646,8 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
 # How To Use DCI To Run Container With Podman From a Host  
 In case if partners/users don't have enough OCP resources, this method can help to use a prepared DCI Container Image and using podman to run from a jumpsthost or any VM helpers. It will use --net=host, so DCI Agent can reach Host External connectivity to reach Remote Ci Job GUI or other links for toolings. 
 
+**Note**: Once you go inside with podman exec, the DCI files structure and contents of settings.yml/other files can be re-used same!
+
 ## Run DCI Container Image Using Podman from a Jumphost or VM Helper  
 - From JumpHost or VM Helper and Pull DCI Container Image
 ```diff
