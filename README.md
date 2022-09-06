@@ -370,12 +370,12 @@ samplechart_0_1_2_tgz
 ### Preflight Manual  
 - **Run Preflight on Helper Node/VM**
 ```diff
-+ preflight check container quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16exx --certification-project-id 628b8f2819e6793741575dxx --pyxis-api-token ff7xuabtckq35060wjvuow4ruky83txx -d /var/lib/dci-openshift-app-agent/auth.json
++ preflight check container quay.io/redhatcerti/cnf-container1:22.5.0 --certification-project-id container-project-id --pyxis-api-token your-partner-account-api-token -d /var/lib/dci-openshift-app-agent/auth.json
 ```
 - **Similarly Run Preflight Inside Container**
 ```diff
 [root@dci-chart-dci-container-f779b9b6-zt6xn /]# 
-+ preflight check container quay.io/rhcert/cmm-aimpaps@sha256:de3ce3f26db61a11c1e97018605670fd6bd01b47b31b4250a7e30b4f5bb16exx --certification-project-id 628b8f2819e6793741575dxx --pyxis-api-token ff7xuabtckq35060wjvuow4ruky83txx -d /root/auth.json
++ preflight check container quay.io/redhatcerti/cnf-operator:22.5.0 --certification-project-id container-project-id --pyxis-api-token your-partner-account-api-token -d /root/auth.json
 ```
 **More Options from Preflight Main Site**  
 https://github.com/redhat-openshift-ecosystem/openshift-preflight
@@ -416,8 +416,8 @@ dci_configuration: Run Preflight container image from DCI
 preflight_test_certified_image: true
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
-  - container_image: "quay.io/rhcert/cmm-operator@sha256:15d68aac525e8fc7c6e115546cff870ea981d89e057bce753aa5919a2bc8ba6e"
-    pyxis_container_identifier: "628b8f2819e6793741575daa"
+  - container_image: "quay.io/redhatcerti/cnf-operator:22.5.0"
+    pyxis_container_identifier: "628b8f2819e6793741575dxx"
 
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
@@ -588,8 +588,8 @@ jumphost                   : ok=113  changed=37   unreachable=0    failed=0    s
 ```yaml
 ---
 dci_topic: OCP-4.9
-dci_name: Test TNF v4.0.2 Using DCI MVNR 5GDU
-dci_configuration: Test TNF Certs Using DCI inside a container Mavenir 5gdu
+dci_name: Test TNF v4.0.2 Using DCI DU
+dci_configuration: Test TNF Certs Using DCI inside a container du
 do_cnf_cert: true
 dci_openshift_app_image: quay.io/testnetworkfunction/cnf-test-partner:latest
 tnf_suites: >-
@@ -600,12 +600,12 @@ tnf_suites: >-
   platform-alteration
   affiliated-certification
 tnf_postrun_delete_resources: false
-dci_openshift_app_ns: mvnr-du
+dci_openshift_app_ns: mvn-du
 dci_teardown_on_success: false
 tnf_log_level: trace
 dci_disconnected: false
 tnf_config:
-  - namespace: mvnr-du
+  - namespace: mvn-du
     targetpodlabels:
       - app=du
     operators_regexp:
