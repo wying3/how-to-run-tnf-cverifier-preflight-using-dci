@@ -348,7 +348,13 @@ chart-testing:
     skipMissingValues: true
     namespace: avachart
     releaseLabel: "app.kubernetes.io/instance"
+    release: 0.1.2 #or 0.1.2-1, 0.1.2-p1 but no CAP on letter
 ```
+**Note**: The release parameter is very tricky/picky it based on this REGEX:  
+```golang
+^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+```
+  
 ```bash
 ./chart-verifier verify --config config.yaml samplechart-0.1.2.tgz
 ```
