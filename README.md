@@ -639,7 +639,30 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/redhat-cip/dci-openshift-app-agent/tree/master/roles/cnf-cert  
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
- 
+
+# How To Use DCI To Run Container With Podman From a Host
+### Podman Run DCI Container Image with NET option
+- From JumpHost or VM Helper and Pull DCI Container Image
+```diff
++ podman pull quay.io/avu0/dci-container-tpc:v3
+```
+- Podman Run DCI container image
+```diff
++ podman run --net=host --privileged -d dci-container-tpc:v3 sleep 3600
+```
+- Verify the podman run from the host
+```diff
++ [root@rack1-jumphost home]# podman exec -it b7219f2997fb bash
++ [root@rack1-jumphost /]# su - dci-openshift-app-agent
++ [dci-openshift-app-agent@rack1-jumphost ~]$ ls -lrt /var/lib/dci-openshift-app-agent/
+drwxr-xr-x. 5 dci-openshift-app-agent dci-openshift-app-agent 70 Aug  2 21:44 samples
++ [dci-openshift-app-agent@rack1-jumphost ~]$ ls -lrt /etc/dci-openshift-app-agent/
+-rw-r--r--. 1 root root 326 Aug  1 13:56 settings.yml
+-rw-r--r--. 1 root root  70 Aug  1 13:56 hosts.yml
+-rw-r--r--. 1 root root 187 Aug  1 13:56 dcirc.sh.dist
+drwxr-xr-x. 2 root root  82 Aug  2 21:44 hooks
+```
+
 # Tips And Troubleshooting 
 ## Tips
 ### Upgrade DCI Repo
