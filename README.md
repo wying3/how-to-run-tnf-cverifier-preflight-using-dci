@@ -24,8 +24,6 @@ Table of Contents
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
-* [How To Use DCI To Run Container With Podman From a Host](#how-to-use-dci-to-run-container-with-podman-from-a-host)
-      * [Podman Run DCI Container Image with NET option](#podman-run-dci-container-image-with-net-option)
 * [Tips And Troubleshooting](#tips-and-troubleshooting)
    * [Tips](#tips)
       * [Upgrade DCI Repo](#upgrade-dci-repo)
@@ -643,7 +641,8 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/test-network-function/cnf-certification-test#general-tests
 
 
-# How To Use DCI To Run Container With Podman From a Host  
+# How To Use DCI To Run Container With Podman From a Host
+
 ### Podman Run DCI Container Image with NET option
 - From JumpHost or VM Helper and Pull DCI Container Image
 ```diff
