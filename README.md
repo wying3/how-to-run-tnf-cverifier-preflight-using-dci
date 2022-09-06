@@ -24,7 +24,7 @@ Table of Contents
       * [Use DCI to Test Preflight with Operator Bundle Image](#use-dci-to-test-preflight-with-operator-bundle-image)
       * [Use DCI to run Chart-Verifier](#use-dci-to-run-chart-verifier)
       * [Use DCI to run TNF test Suite](#use-dci-to-run-tnf-test-suite)
-* [How To Use DCI To Run Container With Podman From a Host](#how-to-use-dci-to-run-container-with-podman-from-a-host)  
+* [How To Use DCI To Run Container With Podman From a Host](#how-to-use-dci-to-run-container-with-podman-from-a-host)
       * [Podman Run DCI Container Image with NET option](#podman-run-dci-container-image-with-net-option)
 * [Tips And Troubleshooting](#tips-and-troubleshooting)
    * [Tips](#tips)
@@ -33,7 +33,6 @@ Table of Contents
       * [Comment Out no_log for Debugging When Test the Preflight](#comment-out-no_log-for-debugging-when-test-the-preflight)
 * [License](#license)
 * [Contact](#contact)
-
 
 # Run TNF, Chart-Verifier and Preflight Using DCI
 ## Purpose of this Repository
