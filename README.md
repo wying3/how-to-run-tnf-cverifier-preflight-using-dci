@@ -640,9 +640,7 @@ jumphost                   : ok=216  changed=90   unreachable=0    failed=0    s
     https://github.com/test-network-function/cnf-certification-test
     https://github.com/test-network-function/cnf-certification-test#general-tests
 
-
 # How To Use DCI To Run Container With Podman From a Host
-
 ### Podman Run DCI Container Image with NET option
 - From JumpHost or VM Helper and Pull DCI Container Image
 ```diff
@@ -719,5 +717,8 @@ Apache License, Version 2.0 (see LICENSE file)
 # Contact
 Email: Distributed-CI Team distributed-ci@redhat.com  
 Email: avu@redhat.com or yinwang@redhat.com for any issue related when using DCI to test/run inside a container
+
+# How To Use DCI To Run Container With Podman From a Host
+### Podman Run DCI Container Image with NET option
 
 
