@@ -66,6 +66,16 @@ The source code can be found in here: https://github.com/dci-labs/nokia-cmm-tnf-
   Or this more harder way original we used [Using CR tooling](https://docs.google.com/document/d/1pBkS0Z1mbbDZpKIytbTfPCSrMFayqUYZ6p2ngCxFkrU/edit?usp=sharing)
   
 ## Build DCI container image with dci's requirements and preflight binary inside the image
+
+---
+**NOTE**
+Make sure you build the image in a RHEL8 host subscribed to the following Red Hat Repositories:
+ 
+- rhel-8-for-x86_64-appstream-rpms
+- rhel-8-for-x86_64-baseos-rpms
+- ansible-2.9-for-rhel-8-x86_64-rpms
+---
+
 ```diff
 + git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
 + podman build -t dci-container-tpc:v4 -f ./Dockerfile-WithPreflight
@@ -686,17 +696,19 @@ drwxr-xr-x. 2 root root  82 Aug  2 21:44 hooks
 - **DCI Container**
   - Just need to re-build Dockerfile, then new DCI Repo will be upgraded
   
-### Force Re-install Ansible when face this Error
-- **Ansible Force Reinstall**
+### Make sure to install Ansible =< 2.9 when facing this Error
+- **Ansible 2.9 Install**
   - Ansible Error
 ```yaml
 Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
 [WARNING]: Skipping plugin (/usr/share/dci/callback/dci.py) as it seems to be invalid: No module named 'dciauth'
 ERROR! Unexpected Exception, this is probably a bug: No module named 'dciauth'
 ```
-  - Work Around
+  - Remove any ansible version > 2.9 (ansible-core) from DNF or PIP
 ```diff
-+ pip3 install --force-reinstall ansible
++ sudo pip3 uninstall ansible-core
++ sudo dnf remove ansible
++ sudo dnf -y install ansible --enablerepo=ansible-2.9-for-rhel-8-x86_64-rpms --disablerepo=epel
 ```
 - **Downloading Metadata for Repository Error**
 ```yaml
