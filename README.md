@@ -78,16 +78,16 @@ Make sure you build the image in a RHEL8 host subscribed to the following Red Ha
 
 ```diff
 + git clone https://github.com/redhat-openshift-ecosystem/openshift-preflight.git
-+ podman build -t dci-container-tpc:v4 -f ./Dockerfile-WithPreflight
-+ podman tag dci-container-tpc:v4 quay.io/avu0/dci-container-tpc:v1
-+ podman push quay.io/avu0/dci-container-tpc:v4
++ podman build -t dci-container-tpc:v6 -f ./Dockerfile-WithPreflight
++ podman tag dci-container-tpc:v6 quay.io/avu0/dci-container-tpc:v6
++ podman push quay.io/avu0/dci-container-tpc:v6
 ```
   
 ## Build DCI container image with dci's requirements only
 ```diff
-+ podman build -t dci-container-tpc:v3 -f ./Dockerfile
-+ podman tag dci-container-tpc:v3 quay.io/avu0/dci-container-tpc:v3
-+ podman push quay.io/avu0/dci-container-tpc:v3
++ podman build -t dci-container-tpc:v5 -f ./Dockerfile
++ podman tag dci-container-tpc:v5 quay.io/avu0/dci-container-tpc:v5
++ podman push quay.io/avu0/dci-container-tpc:v5
 ```
   
 ## Prepare and Deploy DCI Container using helm chart
@@ -111,7 +111,7 @@ global:
 image:
   dcipreflight:
     imgname: dci-container-tpc
-    tag: v3
+    tag: v5
     pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -264,18 +264,18 @@ PING 192.168.30.1 (192.168.30.1) from 192.168.30.21 net1: 56(84) bytes of data.
 ### TNF Test Suite Manual
 - **Using Podman**
 ```diff
-+ podman run --rm --network host -v /root/openshift/install_dir/auth/kubeconfig:/usr/tnf/kubeconfig/config:Z -v /root/certification_6/test-network-function-main/test-network-function:/usr/tnf/config:Z -v /root/certification_6/output_lifecycle:/usr/tnf/claim:Z -e KUBECONFIG=/usr/tnf/kubeconfig/config -e TNF_MINIKUBE_ONLY=false -e TNF_NON_INTRUSIVE_ONLY=false -e TNF_DISABLE_CONFIG_AUTODISCOVER=false -e TNF_PARTNER_NAMESPACE=npv-cmm-34 -e LOG_LEVEL=debug -e PATH=/usr/bin:/usr/local/oc/bin quay.io/testnetworkfunction/test-network-function:v4.0.1 
++ podman run --rm --network host -v /root/openshift/install_dir/auth/kubeconfig:/usr/tnf/kubeconfig/config:Z -v /root/certification_6/test-network-function-main/test-network-function:/usr/tnf/config:Z -v /root/certification_6/output_lifecycle:/usr/tnf/claim:Z -e KUBECONFIG=/usr/tnf/kubeconfig/config -e TNF_MINIKUBE_ONLY=false -e TNF_NON_INTRUSIVE_ONLY=false -e TNF_DISABLE_CONFIG_AUTODISCOVER=false -e TNF_PARTNER_NAMESPACE=npv-cmm-34 -e LOG_LEVEL=debug -e PATH=/usr/bin:/usr/local/oc/bin quay.io/testnetworkfunction/cnf-certification-test:v4.0.2 
 ```
 - **Using Container Shellscript(Podman as default)**  
   - **Example of TNF CONFIG**  
   Make sure you have a targetNameSpaces tnf or any other Namespace with PODs are running  
 ```yaml
 targetNameSpaces:
-  - name: tnf
+  - name: dci
 targetPodLabels:
-  - prefix: test-network-function.com
-    name: generic
-    value: target
+  - prefix: 
+    name: app
+    value: dci-container
 targetCrdFilters:
   - nameSuffix: "group1.test.com"
   - nameSuffix: "test-network-function.com"
@@ -301,7 +301,7 @@ tnf/
 ```
 ```diff
 + ./run-tnf-container.sh -k ~/.kube/config -t ~/tnf/config -o ~/tnf/output -f networking access-control -s access-control-host-resource-PRIVILEGED_POD
-+ ./run-tnf-container.sh -i quay.io/testnetworkfunction/test-network-function:v4.0.1 -o ~/tnf/output/ -k ~/tnf/config/kubeconfig.westd1 -t ~/tnf/config -f platform-alteration -s platform-alteration-tainted-node-kernel -s platform-alteration-hugepages-config
++ ./run-tnf-container.sh -i quay.io/testnetworkfunction/cnf-certification-test:v4.0.2 -o ~/tnf/output/ -k ~/tnf/config/kubeconfig.westd1 -t ~/tnf/config -f platform-alteration
 ```
    - **TNF Cert Links**  
 https://github.com/test-network-function/cnf-certification-test#general-tests  
