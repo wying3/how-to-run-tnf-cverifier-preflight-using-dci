@@ -126,9 +126,9 @@ KubeConf:
                                                                                                                                                                                                  
 Proxy:                                                                                                                                                                                           
   enabled: false                                                                                                                                                                                 
-  http_proxy: "http://135.245.48.34:8000"                                                                                                                                                        
-  https_proxy: "http://135.245.48.34:8000"                                                                                                                                                       
-  no_proxy: "135.111.247.0/24,npvlab.com"                                                                                                                                                        
+  http_proxy: "http://135.xx.48.34:8000"                                                                                                                                                        
+  https_proxy: "http://135.xx.48.34:8000"                                                                                                                                                       
+  no_proxy: "135.xx.247.0/24,xxyylab.com"                                                                                                                                                        
 
 dcinetipvlan:
   name: ipvlan
