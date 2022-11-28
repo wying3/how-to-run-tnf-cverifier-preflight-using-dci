@@ -667,11 +667,11 @@ In case if partners/users don't have enough OCP resources, this method can help 
 ## Run DCI Container Image Using Podman from a Jumphost or VM Helper  
 - From JumpHost or VM Helper and Pull DCI Container Image
 ```diff
-+ podman pull quay.io/avu0/dci-container-tpc:v3
++ podman pull quay.io/avu0/dci-container-tpc:v5
 ```
 - Podman Run DCI container image
 ```diff
-+ podman run --net=host --privileged -d dci-container-tpc:v3 sleep infinity
++ podman run --net=host --privileged -d dci-container-tpc:v5 sleep infinity
 ```
 - Verify the podman run from the host
 ```diff
