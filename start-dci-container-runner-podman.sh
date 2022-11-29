@@ -3,17 +3,16 @@
 print_help() {
     echo "
     ------------------------------------------------------------------------------------------------------------------------
-    Usage: bash $0  -ns|--namespace <dci_ns> -tt|--type <PREFLIGHT|TNF|CHART> -pn|--podname <dci_container> -sk|--skip-copy <yes|no> -sf|--setting <filename.yml>
+    Usage: bash $0 -tt|--type <PREFLIGHT|TNF|CHART> -pn|--con-name <dci_container_id_name> -sk|--skip-copy <yes|no> -sf|--setting <filename.yml>
     Usage: bash $0 [-h | --help]
 
-    Usage ex: bash $0 --namespace dci --type CHART --podname dci-dci-container-xxxxx --settings-tnf.yml --skip-copy yes/no
-              bash $0 --namespace dci --type PREFLIGHT --podname dci-dci-container-xxxxx --settings-tnf.yml
+    Usage ex: bash $0 --type CHART --con-name 46d79199b0ad --settings-tnf.yml --skip-copy yes/no
+              bash $0 --type PREFLIGHT --con-name 46d79199b0ad --settings-tnf.yml
 
     --setting     --- if not specified settings-xx.yml, it will use default settings.yml, otherwise it will rename to settings.yml.
     --skip-copy   --- default is no, it always needs to copy those requirement files to DCI Container POD.
     --type        --- CHART(chart-verifier), PREFLIGHT and TNF(TNF Test Cert). It can be lower case.
-    --namespace   --- Namespace of the dci container POD
-    --podname     --- Pod name where dci openshift agent is installed
+    --con-name    --- Container name or ID where "podman run --net=host --privileged step executed, podman ps"
     --help        --- Usage of the $0
     ------------------------------------------------------------------------------------------------------------------------"
     exit 0
@@ -21,9 +20,9 @@ print_help() {
 
 for i in "$@"; do
     case $i in
-    -pn | --podname)
+    -cn | --con-name)
         if [ -n "$2" ]; then
-            POD_NAME="$2"
+            CON_NAME="$2"
             shift 2
             continue
         fi
@@ -35,20 +34,13 @@ for i in "$@"; do
             continue
         fi
         ;;
-    -ns | --namespace)
-        if [ -n "$2" ]; then
-            NAMESPACE="$2"
-            shift 2
-            continue
-        fi
-        ;;
     -sf | --setting)
         if [ -n "$2" ]; then
             SETTING="$2"
             shift 2
             continue
         fi
-        ;;	
+        ;;
     -sk | --skip-copy)
         if [ -n "$2" ]; then
             SKIP_COPY="$2"
@@ -67,7 +59,7 @@ for i in "$@"; do
 done
 
 TEST_TYPE="${TEST_TYPE^^}"
-if [[ $TEST_TYPE == "" || ${TEST_TYPE} != +(PREFLIGHT|CHART|TNF) || $POD_NAME == "" || $NAMESPACE == "" ]]; then
+if [[ $TEST_TYPE == "" || ${TEST_TYPE} != +(PREFLIGHT|CHART|TNF) || $CON_NAME == "" ]]; then
     print_help
     exit 0
 fi
@@ -149,35 +141,35 @@ CNF_NAME=$(grep 'CNF=' dci-runner.sh |cut -d= -f2)
 if [[ "$SKIP_COPY" != +(yes|YES) ]]; then
       case $TEST_TYPE in
          CHART)
-             logmsg "Copying helm-charts-${CNF_NAME}.yml and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
-             oc -n $NAMESPACE cp helm_config.yml ${POD_NAME}:/var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml
-             oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
+             logmsg "Copying helm-charts-${CNF_NAME}.yml and auth.json files to ${CON_NAME}:/var/lib/dci-openshift-app-agent"
+             podman cp helm_config.yml ${CON_NAME}:/var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml
+             podman cp auth.json  ${CON_NAME}:/var/lib/dci-openshift-app-agent/auth.json
              ;;
          PREFLIGHT)
-             logmsg "Copying pyxis-apikey.txt and auth.json files to ${POD_NAME}:/var/lib/dci-openshift-app-agent"
-             oc -n $NAMESPACE cp auth.json  ${POD_NAME}:/var/lib/dci-openshift-app-agent/auth.json
-             oc -n $NAMESPACE cp pyxis-apikey.txt  ${POD_NAME}:/var/lib/dci-openshift-app-agent/pyxis-apikey.txt
+             logmsg "Copying pyxis-apikey.txt and auth.json files to ${CON_NAME}:/var/lib/dci-openshift-app-agent"
+             podman cp auth.json  ${CON_NAME}:/var/lib/dci-openshift-app-agent/auth.json
+             podman cp pyxis-apikey.txt  ${CON_NAME}:/var/lib/dci-openshift-app-agent/pyxis-apikey.txt
              ;;
          *) ;;
      esac
-     logmsg "Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig to ${POD_NAME}"
-     oc -n $NAMESPACE cp settings.yml ${POD_NAME}:/etc/dci-openshift-app-agent/
-     oc -n $NAMESPACE cp dcirc.sh ${POD_NAME}:/etc/dci-openshift-app-agent/
-     oc -n $NAMESPACE cp install.yml  ${POD_NAME}:/etc/dci-openshift-app-agent/hooks/
-     oc -n $NAMESPACE cp kubeconfig ${POD_NAME}:/var/lib/dci-openshift-app-agent/kubeconfig
-     oc -n $NAMESPACE cp dci-runner.sh ${POD_NAME}:/var/lib/dci-openshift-app-agent/dci-runner.sh
-     oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo chown -R dci-openshift-app-agent:dci-openshift-app-agent /var/lib/dci-openshift-app-agent/*'
+     logmsg "Copying settings.yml, install.yml, dci-runner.sh, dcirc.sh and kubeconfig to ${CON_NAME}"
+     podman cp settings.yml ${CON_NAME}:/etc/dci-openshift-app-agent/
+     podman cp dcirc.sh ${CON_NAME}:/etc/dci-openshift-app-agent/
+     podman cp install.yml  ${CON_NAME}:/etc/dci-openshift-app-agent/hooks/
+     podman cp kubeconfig ${CON_NAME}:/var/lib/dci-openshift-app-agent/kubeconfig
+     podman cp dci-runner.sh ${CON_NAME}:/var/lib/dci-openshift-app-agent/dci-runner.sh
+     podman exec -it ${CON_NAME} /bin/sh -c 'sudo chown -R dci-openshift-app-agent:dci-openshift-app-agent /var/lib/dci-openshift-app-agent/*'
 fi
 
 if [[ "$TEST_TYPE" == +(TNF|PREFLIGHT) ]]; then
     # Why remove helm-chart-xx.yml? cuz dci-runner.sh will check if this file existed, then it will run helm chart also with other tests
     logmsg "Removing /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml when not test Chart-Verifier"
-    oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c "rm /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml" >/dev/null 2>&1
+    podman exec -it ${CON_NAME} /bin/sh -c "rm /var/lib/dci-openshift-app-agent/helm-charts-${CNF_NAME}.yml" >/dev/null 2>&1
 fi
 
 # Clear the dnf cache for Repo Download Issue(Not Fatal) when run dci-runner.sh
-#oc -n $NAMESPACE exec -it ${POD_NAME}  -- bash -c 'sudo dnf clean all;sudo rm -rf /var/cache/dnf' >/dev/null 2>&1
+podman exec -it ${CON_NAME} /bin/sh -c 'sudo dnf clean all;sudo rm -rf /var/cache/dnf' >/dev/null 2>&1
 
 # Start run dci-agent test remotely from your laptop/other nodes
 logmsg "Start DCI Container Runner for ${TEST_TYPE} Testing..."
-oc -n $NAMESPACE exec -it ${POD_NAME} -- bash -c 'su - dci-openshift-app-agent -c "bash /var/lib/dci-openshift-app-agent/dci-runner.sh"'
+podman exec -it ${CON_NAME} /bin/sh -c  'su -s /bin/bash -c "export KUBECONFIG=/var/lib/dci-openshift-app-agent/kubeconfig; bash /var/lib/dci-openshift-app-agent/dci-runner.sh" dci-openshift-app-agent'
