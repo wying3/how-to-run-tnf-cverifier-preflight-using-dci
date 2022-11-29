@@ -675,7 +675,7 @@ In case if partners/users don't have enough OCP resources, this method can help 
 ```
 - Verify the podman run from the host
 ```diff
-+ podman exec -it b7219f2997fb bash or podman exec -it dci-container-tpc bash
++ podman exec -it 30aefd785a16 bash or podman exec -it dci-container-tpc bash
 + su - dci-openshift-app-agent
 + ls -lrt /var/lib/dci-openshift-app-agent/
 drwxr-xr-x. 5 dci-openshift-app-agent dci-openshift-app-agent 70 Aug  2 21:44 samples
@@ -685,7 +685,24 @@ drwxr-xr-x. 5 dci-openshift-app-agent dci-openshift-app-agent 70 Aug  2 21:44 sa
 -rw-r--r--. 1 root root 187 Aug  1 13:56 dcirc.sh.dist
 drwxr-xr-x. 2 root root  82 Aug  2 21:44 hooks
 ```
-
+- **Start Run DCI Runner with Podman From Outside**
+```shell
+ls -1 ava-test/
+auth.json
+dcirc.sh
+dci-runner.sh
+install.yml
+kubeconfig
+pyxis-apikey.txt
+settings-preflight-container-image.yml
+settings-tnf.yml
+start-dci-runner-podman.sh
+```
+```diff
++ bash start-dci-runner-podman.sh --setting settings-tnf.yml --type tnf --con-name 30aefd785a16
++ bash start-dci-runner-podman.sh --setting settings-preflight-container-image.yml --type preflight --con-name 30aefd785a16
++ bash start-dci-runner-podman.sh --setting settings-helm-chart.yml --type chart --con-name 30aefd785a16
+```
 # Tips And Troubleshooting 
 ## Tips
 ### Upgrade DCI Repo
