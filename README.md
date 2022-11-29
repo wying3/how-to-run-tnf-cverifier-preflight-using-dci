@@ -706,7 +706,7 @@ start-dci-runner-podman.sh
 # Tips And Troubleshooting 
 ## Tips
 ### Upgrade DCI Repo
-- **Traditional Method (Non-DCI Container)
+- **Traditional Method (Non-DCI Container)**
 ```diff
 + sudo dnf upgrade --refresh --repo dci -y
 ```
