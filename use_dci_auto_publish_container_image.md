@@ -27,6 +27,9 @@ and Finally Auto-publish once all the criteria are met the conditions.
  podman push quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
  podman push quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
  ```
+- **Output After Push images to Private Quay Registry**
+![Output-Quay-Images](img/quay-images.png "Container Images Listing From Quay")
+
 ### Generate DCI Container Images Settings File
 using Shellscript to communicate to Quay REST API to get image tag or digest
 - **Automate Generate DCI settings.yml file**
@@ -129,5 +132,4 @@ pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 dci-openshift-app-agent-ctl -s -- -vvv
 ```
 - **Result from connect Portal**
-[[./img/auto-publish-result|Portal-Result]
 ![Result-From-Auto-Publish](img/auto-publish-result.png "DCI Automate Auto-publish TestResults")
