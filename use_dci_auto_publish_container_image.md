@@ -22,10 +22,10 @@ and Finally Auto-publish once all the criteria are met the conditions.
 ### Tag and Push Container Images to Registry
 - Tag and push images to private registry using prefix for cnf-type e.g. avacnf
 ```shellSession
- podman tag dci-container-tpc:v7 quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
- podman tag dci-container-tpc:v7 quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
- podman push quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
- podman push quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
+ podman tag dci-container-tpc:v7 quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
+ podman tag dci-container-tpc:v7 quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
+ podman push quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
+ podman push quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
  ```
 - **Output After Push images to Private Quay Registry**
 ![Output-Quay-Images](img/quay-images.png "Container Images Listing From Quay")
