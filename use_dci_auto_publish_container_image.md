@@ -130,3 +130,4 @@ dci-openshift-app-agent-ctl -s -- -vvv
 ```
 - **Result from connect Portal**
 [[./img/auto-publish-result|Portal-Result]
+![Result-From-Auto-Publish](img/auto-publish-result.png "DCI Automate Auto-publish TestResults")
