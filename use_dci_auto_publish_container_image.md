@@ -115,6 +115,7 @@ cert_listings:
   
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
+- **Copy newly generated settings.yml to /etc/dci-openshift-app-agent**
 ### Start Use DCI to Automate the container image and Auto-Publish
 **Following are needed to make sure that they prepared and present before start DCI:** 
 - api-key pyxis-apikey.txt
