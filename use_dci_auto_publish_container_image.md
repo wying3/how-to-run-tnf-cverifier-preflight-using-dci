@@ -36,7 +36,7 @@ using Shellscript to communicate to Quay REST API to get image tag or digest
 ```bash
 #!/bin/bash
 repo_ns=$1    #organization or user-name is either 5gcore or my user-name is avu
-cnf_prefix=$2 #quay.samsung.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
+cnf_prefix=$2 #quay.ss.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
 tag_type=$3   #tag type whether imag-name:v1 or imag-name:@sha256-xxxxxxx
 
 if [[ "$repo_ns" == "" || "$cnf_prefix" == "" ]]; then
@@ -49,7 +49,7 @@ if [[ "$tag_type" == "" ]]; then
      tag_type=name
 fi
 
-readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer wom0OqiFeylS8CAUxDtDIfNSaWXTRKhR5mXlTX09" "https://quay.samsung.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix})
+readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer wom0OqiFeylS8CAUxDtDIfNSaWXTRKhR5mXlTX09" "https://quay.ss.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix})
 
 dci_preflight_settings_file="./settings.yml"
 cat settings_head.yml >${dci_preflight_settings_file}
@@ -57,9 +57,9 @@ cat settings_head.yml >${dci_preflight_settings_file}
 for ((j = 0; j < ${#ImageLists[*]}; j++))
 do
    if [[ "$tag_type" == "name" ]]; then
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.ss.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""')
    else #get digest as tag
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.ss.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""')
    fi
 
    echo "  ${container_digest}" >> ${dci_preflight_settings_file}
@@ -90,12 +90,12 @@ dci_configuration: Run Preflight container image and Create Container Project
 preflight_test_certified_image: true
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
-  - container_image: "quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t1@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
+  - container_image: "quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
     create_container_project: true
     short_description: "I am Full-Automation For avacnf/auto-publish-final-t1"
     attach_product_listing: true
 
-  - container_image: "quay.samsung.bos2.lab/avu/avacnf/auto-publish-final-t2@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
+  - container_image: "quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
     create_container_project: true
     short_description: "I am Full-Automation For avacnf/auto-publish-final-t2"
     attach_product_listing: true
