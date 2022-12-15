@@ -1,5 +1,5 @@
 # How to use DCI to Auto-publish Project certification Container Images
-Noormally with DCI we can use Preflight to scan container or operator bundle images for CVE then submit the test results to Connect Portal and remote CI 
+Normally with DCI we can use Preflight to scan container or operator bundle images for CVE then submit the test results to Connect Portal and remote CI 
 remote server GUI. But for other mandatory fields and product-lists are still NOT updated, these unfinished business can be fully automate e2e Auto-Publish.
 
 ## Purpose
@@ -119,8 +119,26 @@ cert_listings:
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
 - **Copy newly generated settings.yml to /etc/dci-openshift-app-agent**
+
+**Note:** You dont need to use this shellscript to generate settings.yml you don't have all requirements to run it  
+          Example, Quay REST API oauth and bear token, please prepare settings.yml manually as normal.
+
 ### Start Use DCI to Automate the container image and Auto-Publish
-**Following are needed to make sure that they prepared and present before start DCI:** 
+**Note:** Since new changes on DCI scripts are unofficial to upstream, we can use container image to test since the image included all local updates
+
+- **Pull dci container image with new changes include**
+```shellSession
+podman pull quay.io/avu0/dci-container-tpc:save
+```
+- **Run DCI container with podman**
+```shellSession
+podman run --net=host --privileged -d dci-container-tpc:save sleep infinity
+podman ps
+CONTAINER ID  IMAGE                                  COMMAND         CREATED        STATUS            PORTS       NAMES
+b8c3d2a34ed8  quay.io/avu0/dci-container-tpc:save    sleep infinity  4 minutes ago  Up 4 minutes ago              romantic_jang
+```
+
+Following are needed to make sure that they prepared and present before start DCI:  
 - api-key pyxis-apikey.txt
 - Docker Auth.json
 - export KUBECONFING=./kubeconfg
