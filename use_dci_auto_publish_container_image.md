@@ -86,6 +86,40 @@ done
 
 cat settings_tail.yml >> ${dci_preflight_settings_file}
 ```
+- **settings templates head and tail**  
+---
+settings_head.yml:
+```yaml
+---
+dci_topic: OCP-4.11
+dci_name: Testing DCI to create certification Project Automatic and Update Settings
+dci_configuration: Run Preflight container image and Create Container Project
+preflight_test_certified_image: true
+partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+preflight_containers_to_certify:
+```
+
+settings_tail.yml:
+```yaml
+cert_settings:
+   auto_publish: true
+   build_categories: "Standalone image"
+   registry_override_instruct: "<p>This is an instruction how to get the image link.</p>"
+   email_address: "avu@redhat.com"
+   application_categories: "Networking"
+   os_content_type: "Red Hat Universal Base Image (UBI)"
+   privileged: true
+   release_category: "Generally Available"
+   repository_description: "This is a test for SS how to automate to create project,SCAN and update settings"
+
+cert_listings:
+  published: false
+  type: "container stack"
+  pyxis_product_list_identifier: "yyyyyyyyyyyyyyyyy"
+  
+pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+```
+---
 - **How to run the shellscript**
 ```shellSession
 ./ava_generate_dci_preflight_settings.sh avu avacnf digest
