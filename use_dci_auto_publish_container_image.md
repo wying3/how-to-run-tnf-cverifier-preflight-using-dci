@@ -138,15 +138,17 @@ pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 **Note:** Since new changes on DCI scripts are unofficial to upstream, we can use container image to test since the image included all local updates
 
 - **Pull dci container image with new changes include**
-```shellSession
-podman pull quay.io/avu0/dci-container-tpc:save
+```diff
++ podman pull quay.io/avu0/dci-container-tpc:save
 ```
 - **Run DCI container with podman**
-```shellSession
-podman run --net=host --privileged -d dci-container-tpc:save sleep infinity
-podman ps
+```diff
++ podman run --net=host --privileged -d dci-container-tpc:save sleep infinity
++ podman ps
 CONTAINER ID  IMAGE                                  COMMAND         CREATED        STATUS            PORTS       NAMES
 b8c3d2a34ed8  quay.io/avu0/dci-container-tpc:save    sleep infinity  4 minutes ago  Up 4 minutes ago              romantic_jang
++ podman exec -it b8c3d2a34ed8 bash
++ su - dci-openshift-app-agent
 ```
 
 Following are needed to make sure that they prepared and present before start DCI:  
@@ -157,8 +159,8 @@ Following are needed to make sure that they prepared and present before start DC
 - dummy hooks/install.yml
 - product-listing ID
 
-```shellSession
-dci-openshift-app-agent-ctl -s -- -vvv
+```diff
++ dci-openshift-app-agent-ctl -s -- -vvv
 ```
 - **Result from connect Portal**
 ![Result-From-Auto-Publish](img/auto-publish-result.png "DCI Automate Auto-publish TestResults")
