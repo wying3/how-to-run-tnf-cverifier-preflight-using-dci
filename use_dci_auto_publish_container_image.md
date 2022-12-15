@@ -1,4 +1,15 @@
-# How to use DCI to Auto-publish Project certification Container Images
+Table of Contents
+=================
+
+* [How to use DCI to Auto-publish Certification Projects](#how-to-use-dci-to-auto-publish-certification-projects)
+   * [Purpose](#purpose)
+   * [Pre-Requisites](#pre-requisites)
+   * [Prepare the setup for auto-publish the container project certification](#prepare-the-setup-for-auto-publish-the-container-project-certification)
+      * [Tag and Push Container Images to Registry](#tag-and-push-container-images-to-registry)
+      * [Generate DCI Container Images Settings File](#generate-dci-container-images-settings-file)
+      * [Start Use DCI to Automate the container image and Auto-Publish](#start-use-dci-to-automate-the-container-image-and-auto-publish)
+ 
+ # How to use DCI to Auto-publish Certification Projects
 Normally with DCI we can use Preflight to scan container or operator bundle images for CVE then submit the test results to Connect Portal and remote CI 
 remote server GUI. But for other mandatory fields and product-lists are still NOT updated, these unfinished business can be fully automate e2e Auto-Publish.
 
