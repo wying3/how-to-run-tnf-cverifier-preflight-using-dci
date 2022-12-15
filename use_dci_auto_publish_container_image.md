@@ -60,7 +60,7 @@ if [[ "$tag_type" == "" ]]; then
      tag_type=name
 fi
 
-readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer wom0OqiFeylS8CAUxDtDIfNSaWXTRKhR5mXlTX09" "https://quay.ss.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix})
+readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix})
 
 dci_preflight_settings_file="./settings.yml"
 cat settings_head.yml >${dci_preflight_settings_file}
