@@ -127,7 +127,7 @@ pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```bash
 ./ava_generate_dci_preflight_settings.sh <repository_name|username|namespace> <cnf-type-prefix>:amf|smf|nssf> <tag_type:name|digest>
 ```
-- **Example when you push the image this way, now let break down:**
+- **Example when you push the image this way, now let break down:**  
   quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
   
 - **After the domain quay.ss.bos2.lab**  
