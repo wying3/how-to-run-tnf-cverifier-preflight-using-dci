@@ -124,9 +124,17 @@ pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 - **How to run the shellscript**  
    
 **Usage:**
-```diff
-+ ./ava_generate_dci_preflight_settings.sh <repository_name|username|namespace> <cnf-type>:amf|smf|nssf> <tag_type:name|digest>
-```  
+```bash
+./ava_generate_dci_preflight_settings.sh <repository_name|username|namespace> <cnf-type-prefix>:amf|smf|nssf> <tag_type:name|digest>
+```
+- **Example when you push the image this way, now let break down:**
+  quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
+  
+- **After the domain quay.ss.bos2.lab**  
+  **avu**=username or namespace  
+  **avacnf**=cnf-type-prefix  
+  **v1**=tag name but not digest  
+  
 **Example:**
 ```shellSession
 ./ava_generate_dci_preflight_settings.sh avu avacnf digest
