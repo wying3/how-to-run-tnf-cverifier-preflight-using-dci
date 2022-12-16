@@ -31,7 +31,7 @@ and Finally Auto-publish once all the criteria are met the conditions.
 
 ## Prepare the setup for auto-publish the container project certification
 ### Tag and Push Container Images to Registry
-- Tag and push images to private registry using prefix for cnf-type e.g. avacnf
+- **Tag and push images to private registry using prefix for cnf-type e.g. avacnf**
 ```shellSession
  podman tag dci-container-tpc:v7 quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1:v1
  podman tag dci-container-tpc:v7 quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
@@ -121,7 +121,13 @@ cert_listings:
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
 ```
 ---
-- **How to run the shellscript**
+- **How to run the shellscript**  
+   
+**Usage:**
+```diff
++ ./ava_generate_dci_preflight_settings.sh <repository_name|username|namespace> <cnf-type>:amf|smf|nssf> <tag_type:name|digest>
+```  
+**Example:**
 ```shellSession
 ./ava_generate_dci_preflight_settings.sh avu avacnf digest
 ./ava_generate_dci_preflight_settings.sh avu avacnf name
