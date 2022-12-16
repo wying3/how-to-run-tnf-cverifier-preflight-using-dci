@@ -95,6 +95,7 @@ dci_topic: OCP-4.11
 dci_name: Testing DCI to create certification Project Automatic and Update Settings
 dci_configuration: Run Preflight container image and Create Container Project
 preflight_test_certified_image: true
+dci_config_dirs: [/etc/dci-openshift-agent]
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
 ```
@@ -133,6 +134,7 @@ dci_topic: OCP-4.11
 dci_name: Testing DCI to create certification Project Automatic and Update Settings
 dci_configuration: Run Preflight container image and Create Container Project
 preflight_test_certified_image: true
+dci_config_dirs: [/etc/dci-openshift-agent]
 partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
 preflight_containers_to_certify:
   - container_image: "quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
