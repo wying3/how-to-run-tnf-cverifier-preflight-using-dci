@@ -178,6 +178,7 @@ cert_listings:
   pyxis_product_list_identifier: "yyyyyyyyyyyyyyyyy"
   
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+dci_gits_to_components: []
 ```
 - **Copy newly generated settings.yml to /etc/dci-openshift-app-agent**
 
