@@ -107,9 +107,8 @@ done
 
 cat settings_tail.yml >> ${dci_preflight_settings_file}
 ```  
-**Note**: xxxxxxxxxxxxxxxxxxxxxx is your Quay OAuth Applications API key that need to communicate to Quay REST API  
+**Note**: Define `quay_oauth_api_key=xxxxxxxxxxxxxx` on top of the script, this is the info from your Quay OAuth Applications API key that need to communicate to Quay REST API  
 Example, https://quay.samsung.bos2.lab/organization/5gcore?tab=applications
-
   
 - **settings templates head and tail**  
 ---
