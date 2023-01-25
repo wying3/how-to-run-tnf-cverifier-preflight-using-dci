@@ -42,17 +42,30 @@ and Finally Auto-publish once all the criteria are met the conditions.
 ![Output-Quay-Images](img/quay-images.png "Container Images Listing From Quay")
 
 ### Generate DCI Container Images Settings File
-using Shellscript to communicate to Quay REST API to get image tag or digest
+using Shellscript to communicate to Quay REST API to get image tag or digest                     
 - **Automate Generate DCI settings.yml file**
 ```bash
 #!/bin/bash
 repo_ns=$1    #organization or user-name is either 5gcore or my user-name is avu
-cnf_prefix=$2 #quay.ss.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
+cnf_prefix=$2 #quay.samsung.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
 tag_type=$3   #tag type whether imag-name:v1 or imag-name:@sha256-xxxxxxx
+filter=$4     #excluded images or chartrepo from API query
+
+quay_oauth_api_key="xxxxxxxxxxxxxx"
+dci_preflight_settings_file="./settings.yml"
 
 if [[ "$repo_ns" == "" || "$cnf_prefix" == "" ]]; then
-     echo "Usage: $0 5gcore amf"
-     echo "Usage: $0 5gcore amf <name|digest>"
+     echo "Usage: bash $0 5gcore global- name \"chartrepo\""
+     echo "Usage: bash $0 5gcore global- <name|digest> <excluded-filter>"
+     echo "
+     5gcore          :  An organization or user name e.g samsung_5gc or avu
+     global-         :  Is CNF image prefix e.g. global-amf-rnic or using wildcard
+     name|digest     :  Image Tag Type whether it requires to use tag or digest name, preferred tag name
+                        If name or digest argument is omitted it uses default tag name
+
+     excluded_filter :  If you want to exclude images or unwanted e.g. chartrepo or tested-images, then
+                        pass to script argument like this:
+                        bash $0 5gcore global- name \"chartrepo|tested-image-name\""
      exit 1
 fi
 
@@ -60,17 +73,25 @@ if [[ "$tag_type" == "" ]]; then
      tag_type=name
 fi
 
-readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix})
+#if filter arg is empty, then we will filter chartrepo
+if [[ "$filter" == "" ]]; then
+     filter="chartrepo"
+fi
 
-dci_preflight_settings_file="./settings.yml"
+echo "Starting to generate preflight container project settings.yml file"
+echo "Please be patient..."
+echo "The time may determine by how many images it tries to do the query"
+
+readarray -t ImageLists <<<$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository?namespace=${repo_ns}"|jq -r '.repositories[].name' | grep ${cnf_prefix} | egrep -v $filter)
+
 cat settings_head.yml >${dci_preflight_settings_file}
 
 for ((j = 0; j < ${#ImageLists[*]}; j++))
 do
    if [[ "$tag_type" == "name" ]]; then
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.ss.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""')
    else #get digest as tag
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" "https://quay.ss.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.ss.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""')
    fi
 
    echo "  ${container_digest}" >> ${dci_preflight_settings_file}
@@ -78,14 +99,18 @@ do
 
 cat <<EOF >> ${dci_preflight_settings_file}
     create_container_project: true
-    short_description: "I am Full-Automation For ${image_name}"
-    attach_product_listing: true
+    short_description: "${image_name}"
+    attach_product_listing: false
 EOF
 echo >>${dci_preflight_settings_file}
 done
 
 cat settings_tail.yml >> ${dci_preflight_settings_file}
-```
+```  
+**Note**: xxxxxxxxxxxxxxxxxxxxxx is your Quay OAuth Applications API key that need to communicate to Quay REST API  
+Example, https://quay.samsung.bos2.lab/organization/5gcore?tab=applications
+
+  
 - **settings templates head and tail**  
 ---
 settings_head.yml:
@@ -119,26 +144,32 @@ cert_listings:
   pyxis_product_list_identifier: "yyyyyyyyyyyyyyyyy"
   
 pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+dci_gits_to_components: []
 ```
 ---
 - **How to run the shellscript**  
    
-**Usage:**
-```bash
-./ava_generate_dci_preflight_settings.sh <repository_name|username|namespace> <cnf-type-prefix>:amf|smf|nssf> <tag_type:name|digest>
-```
-- **Example when you push the image this way, now let break down:**  
-  quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2:v1
-  
-- **After the domain quay.ss.bos2.lab**  
-  **avu**=username or namespace  
-  **avacnf**=cnf-type-prefix  
-  **v1**=tag name but not digest  
-  
+- **Script Usage**
+```shellSession
+./ava_generate_dci_preflight_settings.sh 
+Usage: bash ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo"
+Usage: bash ./ava_generate_dci_preflight_settings.sh 5gcore global- <name|digest> <excluded-filter>
+
+     5gcore          :  An organization or user name e.g samsung_5gc or avu
+     global-         :  Is CNF image prefix e.g. global-amf-rnic or using wildcard
+     name|digest     :  Image Tag Type whether it requires to use tag or digest name, preferred tag name
+                        If name or digest argument is omitted it uses default tag name
+                        
+     excluded_filter :  If you want to exclude images or unwanted e.g. chartrepo or tested-images, then
+                        pass to script argument like this:
+                        ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo|tested-image-name"
+```  
+
 **Example:**
 ```shellSession
 ./ava_generate_dci_preflight_settings.sh avu avacnf digest
 ./ava_generate_dci_preflight_settings.sh avu avacnf name
+./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo|tested-image-name"
 ```
 - **Check the settings.yml content after it automatic generate**
 settings.yml:
