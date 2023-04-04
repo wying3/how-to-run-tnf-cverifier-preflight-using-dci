@@ -45,13 +45,25 @@ and Finally Auto-publish once all the criteria are met the conditions.
 using Shellscript to communicate to Quay REST API to get image tag or digest                     
 - **Automate Generate DCI settings.yml file**
 ```bash
+Usage: bash ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo"
+Usage: bash ./ava_generate_dci_preflight_settings.sh 5gcore global- <name|digest> <excluded-filter>
+
+     5gcore          :  An organization or user name e.g samsung_5gc or avu
+     global-         :  Is CNF image prefix e.g. global-amf-rnic or using wildcard
+     name|digest     :  Image Tag Type whether it requires to use tag or digest name, preferred tag name
+                        If name or digest argument is omitted it uses default tag name
+
+     excluded_filter :  If you want to exclude images or unwanted e.g. chartrepo or tested-images, then
+                        pass to script argument like this:
+                        bash ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo|tested-image-name"
+[avu@avu Samsung]$ cat ava_generate_dci_preflight_settings.sh
 #!/bin/bash
 repo_ns=$1    #organization or user-name is either 5gcore or my user-name is avu
-cnf_prefix=$2 #quay.samsung.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
+cnf_prefix=$2 #quay.xxxx.bos2.lab/api/v1/repository/avu/amf/amf-ipds:v1 --> amf is cnf prefix
 tag_type=$3   #tag type whether imag-name:v1 or imag-name:@sha256-xxxxxxx
 filter=$4     #excluded images or chartrepo from API query
 
-quay_oauth_api_key="xxxxxxxxxxxxxx"
+quay_oauth_api_key="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 dci_preflight_settings_file="./settings.yml"
 
 if [[ "$repo_ns" == "" || "$cnf_prefix" == "" ]]; then
@@ -89,9 +101,9 @@ cat settings_head.yml >${dci_preflight_settings_file}
 for ((j = 0; j < ${#ImageLists[*]}; j++))
 do
    if [[ "$tag_type" == "name" ]]; then
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.xxxx.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + ":" + .tags[].name + "\""' | head -n1)
    else #get digest as tag
-       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""')
+       container_digest=$(curl --silent -X GET -H "Authorization: Bearer ${quay_oauth_api_key}" "https://quay.samsung.bos2.lab/api/v1/repository/${repo_ns}/${ImageLists[$j]}" | jq -r '"- container_image: " + "\"quay.samsung.bos2.lab/'${repo_ns}'/" + .name + "@" + .tags[].manifest_digest + "\""' | head -n1)
    fi
 
    echo "  ${container_digest}" >> ${dci_preflight_settings_file}
@@ -108,7 +120,7 @@ done
 cat settings_tail.yml >> ${dci_preflight_settings_file}
 ```  
 **Note**: Define `quay_oauth_api_key=xxxxxxxxxxxxxx` on top of the script, this is the info from your Quay OAuth Applications API key that need to communicate to Quay REST API  
-Example, https://quay.samsung.bos2.lab/organization/5gcore?tab=applications
+Example, https://quay.xxxxxx.bos2.lab/organization/samsung_5gc?tab=applications
   
 - **settings templates head and tail**  
 ---
@@ -116,11 +128,12 @@ settings_head.yml:
 ```yaml
 ---
 dci_topic: OCP-4.11
-dci_name: Testing DCI to create certification Project Automatic and Update Settings
-dci_configuration: Run Preflight container image and Create Container Project
+dci_name: Testing DCI to create certification Project Automatic and Update mandatory settings and publish
+dci_configuration: Using DCI create project,update,submit result and auto-publish
 preflight_test_certified_image: true
 dci_config_dirs: [/etc/dci-openshift-agent]
-partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+partner_creds: "/var/lib/dci-openshift-app-agent/demo-auth.json"
+organization_id: 15451045
 preflight_containers_to_certify:
 ```
 
@@ -135,15 +148,16 @@ cert_settings:
    os_content_type: "Red Hat Universal Base Image (UBI)"
    privileged: true
    release_category: "Generally Available"
-   repository_description: "This is a test for SS how to automate to create project,SCAN and update settings"
+   repository_description: "This is a test for Demo how to automate to create project,SCAN and update settings"
 
 cert_listings:
-  published: false
+  published: true
   type: "container stack"
-  pyxis_product_list_identifier: "yyyyyyyyyyyyyyyyy"
-  
-pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+  pyxis_product_list_identifier: "642a2aff90de6580a53c2f66" #9GC UDM
+
+pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/demo-pyxis-apikey.txt"
 dci_gits_to_components: []
+...
 ```
 ---
 - **How to run the shellscript**  
@@ -158,10 +172,10 @@ Usage: bash ./ava_generate_dci_preflight_settings.sh 5gcore global- <name|digest
      global-         :  Is CNF image prefix e.g. global-amf-rnic or using wildcard
      name|digest     :  Image Tag Type whether it requires to use tag or digest name, preferred tag name
                         If name or digest argument is omitted it uses default tag name
-                        
+
      excluded_filter :  If you want to exclude images or unwanted e.g. chartrepo or tested-images, then
                         pass to script argument like this:
-                        ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo|tested-image-name"
+                        bash ./ava_generate_dci_preflight_settings.sh 5gcore global- name "chartrepo|tested-image-name"
 ```  
 
 **Example:**
@@ -175,20 +189,21 @@ settings.yml:
 ```yaml
 ---
 dci_topic: OCP-4.11
-dci_name: Testing DCI to create certification Project Automatic and Update Settings
-dci_configuration: Run Preflight container image and Create Container Project
+dci_name: Testing DCI to create certification Project Automatic and Update mandatory settings and publish
+dci_configuration: Using DCI create project,update,submit result and auto-publish
 preflight_test_certified_image: true
 dci_config_dirs: [/etc/dci-openshift-agent]
-partner_creds: "/var/lib/dci-openshift-app-agent/auth.json"
+partner_creds: "/var/lib/dci-openshift-app-agent/demo-auth.json"
+organization_id: 15451045
 preflight_containers_to_certify:
-  - container_image: "quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t1@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
+  - container_image: "quay.io/avu0/auto-publish-ubi8-nginx-demo1:v120"
     create_container_project: true
-    short_description: "I am Full-Automation For avacnf/auto-publish-final-t1"
+    short_description: "I am doing a full-automation e2e auto-publish for following image auto-publish-ubi8-nginx-demo1:v120"
     attach_product_listing: true
 
-  - container_image: "quay.ss.bos2.lab/avu/avacnf/auto-publish-final-t2@sha256:7511389e8d9057e9f350dbc907afddda455a367a095a70e392a126b55cacc55f"
+  - container_image: "quay.io/avu0/auto-publish-ubi8-nginx-demo2:v120"
     create_container_project: true
-    short_description: "I am Full-Automation For avacnf/auto-publish-final-t2"
+    short_description: "I am doing a full-automation e2e auto-publish for following image auto-publish-ubi8-nginx-demo2:v120"
     attach_product_listing: true
 
 cert_settings:
@@ -200,15 +215,16 @@ cert_settings:
    os_content_type: "Red Hat Universal Base Image (UBI)"
    privileged: true
    release_category: "Generally Available"
-   repository_description: "This is a test for SS how to automate to create project,SCAN and update settings"
+   repository_description: "This is a test for Demo how to automate to create project,SCAN and update settings"
 
 cert_listings:
-  published: false
+  published: true
   type: "container stack"
-  pyxis_product_list_identifier: "yyyyyyyyyyyyyyyyy"
-  
-pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/pyxis-apikey.txt"
+  pyxis_product_list_identifier: "642a2aff90de6580a53c2f66" #9GC UDM
+
+pyxis_apikey_path: "/var/lib/dci-openshift-app-agent/demo-pyxis-apikey.txt"
 dci_gits_to_components: []
+...
 ```
 - **Copy newly generated settings.yml to /etc/dci-openshift-app-agent**
 
@@ -216,22 +232,8 @@ dci_gits_to_components: []
           Example, Quay REST API oauth and bear token, please prepare settings.yml manually as normal.
 
 ### Start Use DCI to Automate the container image and Auto-Publish
-**Note:** Since new changes on DCI scripts are unofficial to upstream, we can use container image to test since the image included all local updates
-
-- **Pull dci container image with new changes include**
-```diff
-+ podman pull quay.io/avu0/dci-container-tpc:save
-```
-- **Run DCI container with podman**
-```diff
-+ podman run --net=host --privileged -d dci-container-tpc:save sleep infinity
-+ podman ps
-CONTAINER ID  IMAGE                                  COMMAND         CREATED        STATUS            PORTS       NAMES
-b8c3d2a34ed8  quay.io/avu0/dci-container-tpc:save    sleep infinity  4 minutes ago  Up 4 minutes ago              romantic_jang
-+ podman exec -it b8c3d2a34ed8 bash
 + su - dci-openshift-app-agent
 ```
-
 Following are needed to make sure that they prepared and present before start DCI:  
 - api-key pyxis-apikey.txt
 - Docker Auth.json
