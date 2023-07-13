@@ -16,6 +16,6 @@ dci_charts:
     chart_file: https://ansvu.github.io/du_test/du-2.9.tgz
     #chart_values: https://github.com/ansvu/du_test/blob/6560ea94f22da35b33230b869c7d25dc7a9b2ea4/values-ying.yaml    
     #install: true
-    flags: -c
+    flags: -c # --skip-cleanup - set this to skip resource cleanup after verifier run so CNF remain running
     deploy_chart: true
     create_pr: false
