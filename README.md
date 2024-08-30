@@ -126,9 +126,9 @@ KubeConf:
                                                                                                                                                                                                  
 Proxy:                                                                                                                                                                                           
   enabled: false                                                                                                                                                                                 
-  http_proxy: "http://135.245.48.34:8000"                                                                                                                                                        
-  https_proxy: "http://135.245.48.34:8000"                                                                                                                                                       
-  no_proxy: "135.111.247.0/24,npvlab.com"                                                                                                                                                        
+  http_proxy: "http://135.xx.48.34:8000"                                                                                                                                                        
+  https_proxy: "http://135.xx.48.34:8000"                                                                                                                                                       
+  no_proxy: "135.xx.247.0/24,xxyylab.com"                                                                                                                                                        
 
 dcinetipvlan:
   name: ipvlan
@@ -667,17 +667,17 @@ In case if partners/users don't have enough OCP resources, this method can help 
 ## Run DCI Container Image Using Podman from a Jumphost or VM Helper  
 - From JumpHost or VM Helper and Pull DCI Container Image
 ```diff
-+ podman pull quay.io/avu0/dci-container-tpc:v3
++ podman pull quay.io/avu0/dci-container-tpc:v5
 ```
 - Podman Run DCI container image
 ```diff
-+ podman run --net=host --privileged -d dci-container-tpc:v3 sleep 3600
++ podman run --net=host --privileged -d dci-container-tpc:v5 sleep infinity
 ```
 - Verify the podman run from the host
 ```diff
-+ [root@rack1-jumphost home]# podman exec -it b7219f2997fb bash
-+ [root@rack1-jumphost /]# su - dci-openshift-app-agent
-+ [dci-openshift-app-agent@rack1-jumphost ~]$ ls -lrt /var/lib/dci-openshift-app-agent/
++ podman exec -it 30aefd785a16 bash or podman exec -it dci-container-tpc bash
++ su - dci-openshift-app-agent
++ ls -lrt /var/lib/dci-openshift-app-agent/
 drwxr-xr-x. 5 dci-openshift-app-agent dci-openshift-app-agent 70 Aug  2 21:44 samples
 + [dci-openshift-app-agent@rack1-jumphost ~]$ ls -lrt /etc/dci-openshift-app-agent/
 -rw-r--r--. 1 root root 326 Aug  1 13:56 settings.yml
@@ -685,13 +685,30 @@ drwxr-xr-x. 5 dci-openshift-app-agent dci-openshift-app-agent 70 Aug  2 21:44 sa
 -rw-r--r--. 1 root root 187 Aug  1 13:56 dcirc.sh.dist
 drwxr-xr-x. 2 root root  82 Aug  2 21:44 hooks
 ```
-
+- **Start Run DCI Runner with Podman From Outside**
+```shell
+ls -1 ava-test/
+auth.json
+dcirc.sh
+dci-runner.sh
+install.yml
+kubeconfig
+pyxis-apikey.txt
+settings-preflight-container-image.yml
+settings-tnf.yml
+start-dci-runner-podman.sh
+```
+```diff
++ bash start-dci-runner-podman.sh --setting settings-tnf.yml --type tnf --con-name 30aefd785a16
++ bash start-dci-runner-podman.sh --setting settings-preflight-container-image.yml --type preflight --con-name 30aefd785a16
++ bash start-dci-runner-podman.sh --setting settings-helm-chart.yml --type chart --con-name 30aefd785a16
+```
 # Tips And Troubleshooting 
 ## Tips
 ### Upgrade DCI Repo
-- **Traditional Method (Non-DCI Container)
+- **Traditional Method (Non-DCI Container)**
 ```diff
-+ sudo dnf upgrade --refresh --repo dci --skip-broken --nobest
++ sudo dnf upgrade --refresh --repo dci -y
 ```
 - **DCI Container**
   - Just need to re-build Dockerfile, then new DCI Repo will be upgraded
@@ -734,7 +751,8 @@ ERROR: fatal: [jumphost]: FAILED! => {"censored": "the output has been hidden du
 + Edit /usr/share/dci-openshift-app-agent/roles/preflight/tasks/test_preflight_check_container_binary.yml
 + no_log: true ---> #no_log: true
 + https://github.com/redhat-cip/dci-openshift-app-agent/blob/master/roles/preflight/tasks/test_preflight_check_container_binary.yml#L24
-```
+```  
+**Note:** For no_log enabling, it depends on which TASK phase and catagory of that error occurred, then go to that file and update this no_log parameter accordingly.
 
 # License
 Apache License, Version 2.0 (see LICENSE file)
